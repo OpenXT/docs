@@ -1,0 +1,235 @@
+OpenXT 6.0.0 Release Notes
+==========================
+Ross Philipson <philipsonr@ainfosec.com>
+v1.0, August 2016: First revision
+
+:numbered:
+Features
+--------
+
+New in OpenXT v6.0.0:
+
+- OpenEmbedded platform update - Yocto release 2.0 (Jethro) - see https://www.yoctoproject.org/downloads/core/jethro20
+- Linux Kernel update 4.4.16
+- Xen update 4.3.4
+- Intel Skylake support
+- Package Updates
+* OpenSSL 1.0.1t
+* OpenSSH 7.1p2
+* rsyslog 7.6.1
+* logrotate 3.9.1
+
+<<<
+
+:numbered:
+Security Fixes
+--------------
+
+List of security fixes:
+
+- OpenEmbedded security fixes - see Security Fixes tab - https://www.yoctoproject.org/downloads/core/jethro20
+- Xen XSA-154, XSA-182
+- Linux Kernel CVE-2016-5696, CVE-2016-0758, CVE-2016-3135, CVE-2016-3672, CVE-2016-3951,
+CVE-2016-4482, CVE-2016-4568, CVE-2016-4569, CVE-2016-4578, CVE-2016-5244
+- glibc CVE-2015-7547
+- wpa_supplicant CVE-2015-8041, CVE-2015-4141
+
+<<<
+
+:numbered:
+Known Issues
+------------
+
+Known issues and workarounds for OpenXT v6.0.0
+
+
+==== Ubuntu 15.10 (and later) DVD VM boot failure.
+
+Ubuntu Live and Full install DVDs fail to boot in VMs.
+
+Workaround:
+
+Use the Ubuntu MinimalCD network installation:
+
+https://help.ubuntu.com/community/Installation/MinimalCD
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-431
+
+==== Broadcom NetXtreme M5722 Ethernet PCI Pass-through.
+
+This NIC is known to cause BSODs in Windows guests and cannot currently
+be used for pass-through in OpenXT.
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-453
+
+==== Anaconda installer failure during VM installation.
+
+This effects distributions that use Anaconda (e.g. Fedora and CentOS). The
+underlying problem is an interoperability issue between the guest device
+model and the bochs_drm driver that is being loaded during the install.
+
+- Workaround to install CentOS:
+* Press tab on the CD bootloader screen
+* Add " bochs_drm.blacklist=yes" to the kernel command line
+* Press enter
+* Once the installer starts, switch on eth0 in "NETWORK & HOST NAME"
+* Install
+- Workaround to install Fedora:
+* Press tab on the CD bootloader screen
+* Add " bochs_drm.fbdev=false" to the kernel command line
+* Press enter
+* Once the installer starts, switch on eth0 in "NETWORK & HOST NAME"
+* Install
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-485
+
+==== The CD auto-assign feature is disabled for the 6.0 release.
+
+CDROM auto-assign has been completely disabled, as well as the "CDROM install"
+option in the VM creation wizard. The only way to assign a CDROM to a guest
+is to do so manually in the Devices window. The "Always Us With This VM" option
+defaults to true, implying that assignments will persist across reboots,
+enabling guests to boot to CDROMs.
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-635
+
+==== TXT/Measure Launch unusable on certain systems.
+
+This may not be an exhaustive list but these are the systems where TXT and
+Measured Launch is known not to work:
+
+- Dell Venue - unknown firmware version
+- Dell 7450 - A13 firmware version
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-388
+
+==== Windows Update performance issues and hangs in Windows 7 guests.
+
+This is not an OpenXT issue but rather a Windows Update issue that occurs on
+bare metal installs as well. This is covered here to aid uses in getting
+Windows Update to work. See the following Wiki with details on how to
+accomplish this:
+
+https://openxt.atlassian.net/wiki/display/DC/Installing+Windows+7
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-423
+
+==== Pass-through devices must be removed from VMs before physically removed.
+
+Procedure:
+
+- Edit the VM settings that has the PCI device assigned.
+- On the "PCI Pass Through" tab, remove the device(s) in question.
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-687
+
+==== Cannot install VM from any CD drive during new VM setup.
+
+Because of changes to the behavior of CD auto-assignment (see above), a newly
+created VM cannot be started from a CD on the final page of the new VM wizard.
+
+Workaround:
+
+- Create a VM, on the final page, select "Create VM & Install OS later"
+- In Devices, assign the CD-ROM to the VM, make sure "Always Use With This VM" is checked
+- Start the VM
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-661
+
+==== Installation of OpenXT may occasionally fail due to previous disk layouts.
+
+This failure has been seen when installing on systems that had a previous
+operating system installed like Windows 10.
+
+Workaround:
+
+- The install will fail after selecting to do a clean install.
+- Type Alt-F3 and enter +root+ as the user ID.
+- Run +dd if=/dev/zero of=/dev/sda+ for a few seconds in the terminal.
+- Reboot and restart the installation.
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-710
+
+<<<
+
+==== (Advanced) Building Linux PV drivers on distros with newer kernels.
+
+The OpenXT V4V driver for Linux will not build on Linux distributions with
+newer kernels. This has been seen with Ubuntu 14.x/15.x. The workaround is
+to use the following patch and then rebuild the DKMS package for V4V.
+
+--------------------------------------------------------------------------------------------
+diff --git a/openxt-v4v/openxt-v4v.c b/openxt-v4v/openxt-v4v.c
+index d103350..74a6174 100644
+--- a/openxt-v4v/openxt-v4v.c
++++ b/openxt-v4v/openxt-v4v.c
+@@ -62,6 +62,9 @@
+ #include <linux/slab.h>
+ #endif
+ 
++#define get_unused_fd() get_unused_fd_flags(0)
++extern int get_unused_fd_flags(unsigned flags);
++
+ #define MOAN do { printk(KERN_ERR "%s:%d MOAN called\n",__FILE__,__LINE__); } while (1==0)
+ 
+ #define DEFAULT_RING_SIZE      (V4V_ROUNDUP((((PAGE_SIZE)*32) - sizeof(v4v_ring_t)-V4V_ROUNDUP(1))))
+--------------------------------------------------------------------------------------------
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-326
+
+<<<
+
+:numbered!:
+
+[appendix]
+Generating Files
+----------------
+
+The AsciiDoc tools can be used to generate different file types. The package
+is available in standard distributions:
+
+Debian/Ubuntu:
+
+--------------------------
+$ apt-get install asciidoc
+--------------------------
+
+Redhat/CentOS:
+
+--------------------------
+$ yum install asciidoc
+--------------------------
+
+The following examples generate PDF and plain text formats:
+
+-------------------------------------------
+$ a2x -f pdf OpenXT_6.0.0_ReleaseNotes.txt
+$ a2x -f text OpenXT_6.0.0_ReleaseNotes.txt
+-------------------------------------------
+
+[appendix]
+License
+-------
+
+Copyright 2016 by Assured Information Security, Inc. Created by Ross Philipson <philipsonr@ainfosec.com>. This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
+
