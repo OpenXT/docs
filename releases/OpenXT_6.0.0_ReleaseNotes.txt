@@ -28,7 +28,7 @@ Security Fixes
 List of security fixes:
 
 - OpenEmbedded security fixes - see Security Fixes tab - https://www.yoctoproject.org/downloads/core/jethro20
-- Xen XSA-154, XSA-182
+- Xen XSA-154, XSA-182, XSA-185, XSA-187
 - Linux Kernel CVE-2016-5696, CVE-2016-0758, CVE-2016-3135, CVE-2016-3672, CVE-2016-3951,
 CVE-2016-4482, CVE-2016-4568, CVE-2016-4569, CVE-2016-4578, CVE-2016-5244
 - glibc CVE-2015-7547
@@ -167,6 +167,52 @@ Workaround:
 Ticket:
 
 https://openxt.atlassian.net/browse/OXT-710
+
+==== Guest tools upgrade procedure
+
+Neither the Windows nor Linux guest tools presently support upgrading. The
+recommended procedure is to uninstall the tools before upgrading OpenXT.
+After OpenXT is upgraded, install the new tools in the guests.
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-752
+
+==== Windows guest tools uninstaller prompts for reboot incorrectly
+
+The Windows guest tools uninstaller pops up a dialog box asking if the user
+wants to reboot shortly after the uninstaller is run but before the uninstall
+process is complete. This can lead to a failed or partial uninstall if OK for
+reboot is pressed too soon.
+
+Workaround:
+
+Wait for OpenXT Tools to fully complete the removal process, which will be
+indicated by a Windows prompt to reboot.
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-752
+
+==== Extremely poor performance using Windows PV Network drivers
+
+Due to changes, most likely in the Linux netback drivers in one of the
+kernel uprevs, extremely poor performance can be experienced in a Windows 7
+guest with the tools installed.
+
+Workaround:
+
+The workaround is to disable Large Send Offload (LSO) for the interface:
+
+- Open Windows 7 Device Manager
+- Double-click on Network Adapter - OpenXT PV Ethernet Adapter
+- Select "Advanced" tab
+- Select "Large Send Offload" property
+- Set Value to "Disabled"
+
+Ticket:
+
+https://openxt.atlassian.net/browse/OXT-752
 
 <<<
 
