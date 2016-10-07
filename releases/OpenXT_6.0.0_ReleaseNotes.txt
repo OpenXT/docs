@@ -33,6 +33,13 @@ List of security fixes:
 CVE-2016-4482, CVE-2016-4568, CVE-2016-4569, CVE-2016-4578, CVE-2016-5244
 - glibc CVE-2015-7547
 - wpa_supplicant CVE-2015-8041, CVE-2015-4141
+- OXT-653: Security fixes to the Xen v4v interdomain communication subsystem to
+  address overflow handling, input validation and signed/unsigned type
+  correctness in v4v hypervisor code. These fixes affect the isolation
+  enforcement of the hypervisor, protect against memory corruption and denial of
+  service to other VMs, and fix a potential path for enabling code execution in
+  other VMs, including within the privileged VM domain-0. CVE identifier
+  application is currently pending.
 
 <<<
 
