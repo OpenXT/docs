@@ -44,6 +44,27 @@ CVE-2016-4482, CVE-2016-4568, CVE-2016-4569, CVE-2016-4578, CVE-2016-5244
 <<<
 
 :numbered:
+Testing
+-------
+
+Tested hardware listing can be found here:
+
+https://openxt.atlassian.net/wiki/display/TEST/Release+6.0+Hardware+Testing
+
+Tested guest operating systems:
+
+ - Windows10 64 bit
+ - Windows 7 SP1 64 bit
+ - Windows 7 SP1 32 bit
+ - Unbuntu 16.04 64 bit
+ - Unbuntu 16.04 32 bit
+ - Debian 8 (Jessie) 64 bit (note: have to blacklist bochs_drm)
+ - Debian 7 (Wheezy) 64 bit
+ - Debian 7 (Wheezy) 32 bit
+
+<<<
+
+:numbered:
 Known Issues
 ------------
 
