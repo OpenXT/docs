@@ -1,0 +1,367 @@
+OpenXT 8.0.1 Release
+====================
+Eric Chanudet <chanudete@ainfosec.com>
+v1.0, November 2018: First revision
+:toc:
+
+:numbered:
+Platform
+--------
+
+The 8.0.1 release is a tagged checkpoint of the stable-8 branch.
+
+- OpenEmbedded: Pyro
+  * openembedded-core: link:http://git.openembedded.org/openembedded-core/commit/?id=819aa151bd634122a46ffdd822064313c67f5ba5[819aa151bd build-appliance-image: Update to pyro head revision]
+  * meta-openembedded: link:http://git.openembedded.org/openembedded-core/commit/?id=9eaebc6e783f1394bb5444326cd05a976b3122e9[9eaebc6e7 wireshark: Update Package to 2.2.12]
+  * meta-intel: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-intel/commit/?id=9b37952d6af36358b6397cedf3dd53ec8962b6bf[9b37952 linux-intel/4.9: Update to v4.9.81]
+  * meta-java: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-java/commit/?id=0c27b120aa508e4bb41394b8dd3645949a611128[0c27b12 icedtea-native: Fix segmentation build during build]
+  * meta-selinux: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-selinux/commit/?id=b1dac7e2b26f869c991c6492aa7fa18eaa4b47f6[b1dac7e policycorutils: package files in base_sbindir.]
+  * meta-virtualization: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-virtualization/commit/?id=45ad257a1e4a6707c376d2f7eb26c3c8bdf03607[45ad257 go-fsnotify: switch to new repository on github]
+- Xen: 4.9.3
+  * xen: link:http://xenbits.xen.org/gitweb/?p=xen.git;a=commit;h=062052a149828acdc6cab7deb88ddc3e3438e400[062052a149 update Xen version to 4.9.3]
+- Linux kernels: 4.14.66
+  * linux link:https://github.com/torvalds/linux/commit/c5f7d3c4daf1[c5f7d3c4daf1 Linux 4.14.66]
+
+==== Measurement support
+
+OpenXT supports two modes of measurement. Each mode is enforced automatically depending on the boot method of the OpenXT installation (Legacy vs UEFI).
+
+As for Legacy or UEFI support, it is not currently possible to transistion or upgrade an existing OpenXT installation from Legacy to UEFI, therefore it is not possible to change an existing measurement scheme or forward seal against a different one.
+
+===== Legacy boot
+
+Legacy installation will perform DRTM measurement using TBoot. It requires a compatible TPM chip and TXT to be enabled in the BIOS before installing OpenXT.
+
+===== UEFI
+
+UEFI installation will perform SRTM measurement. It requires a compatible TPM chip.
+
+==== Package upgrades: Dom0
+
+* audit: 2.7.6-r0 -> 2.8.4-r0
+* intel-microcode: 20180312-r0 -> 20180807-r0
+* linux-kernel: 4.14.57-r0 -> 4.14.66-r0
+* libselinux: 2.7-r0 -> 2.8-r0
+* libsemanage1: 2.7-r0 -> 2.8-r0
+* libsepol1: 2.7-r0 -> 2.8-r0
+* xen: 4.9.3-pre+git0+85af12d841-r0 -> 4.9.3+git0+85af12d841-r0
+* policycoreutils: 2.7-r0 -> 2.8-r0
+* tboot: 1.9.5-r1 -> 1.9.6-r0
+* xenclient-feed-configs: 1648-r15 -> 1785-r15
+
+==== Package upgrades: UIVM
+
+* audit: 2.7.6-r0 -> 2.8.4-r0
+* linux-kernel: 4.14.57-r0 -> 4.14.66-r0
+* libselinux: 2.7-r0 -> 2.8-r0
+* libsemanage1: 2.7-r0 -> 2.8-r0
+* libsepol1: 2.7-r0 -> 2.8-r0
+* xen: 4.9.3-pre-r0 -> 4.9.3-r0
+* xenclient-feed-configs: 1648-r15 -> 1785-r15
+
+==== Package upgrades: NDVM (Network)
+
+* audit: 2.7.6-r0 -> 2.8.4-r0
+* linux-kernel: 4.14.57-r0 -> 4.14.66-r0
+* libselinux: 2.7-r0 -> 2.8-r0
+* libsemanage1: 2.7-r0 -> 2.8-r0
+* libsepol1: 2.7-r0 -> 2.8-r0
+* xen: 4.9.3-pre-r0 -> 4.9.3-r0
+* policycoreutils: 2.7-r0 -> 2.8-r0
+* xenclient-feed-configs: 1648-r15 -> 1785-r15
+
+<<<
+
+:numbered:
+Feature Additions
+-----------------
+
+- https://github.com/OpenXT/xenclient-oe/commit/f74ee30d7a47dbfb1265db90dda36aa34595f4cb[xenclient-oe/f74ee30d]: tboot: Upgrade to 1.9.6 and backports., https://openxt.atlassian.net/browse/OXT-1389[OXT-1389] https://openxt.atlassian.net/browse/OXT-1323[OXT-1323] https://openxt.atlassian.net/browse/OXT-1398[OXT-1398] 
+- https://github.com/OpenXT/xenclient-oe/commit/810232fd84f30d14b9f3286d10fd174cfd6bf2bc[xenclient-oe/810232fd]: xen: upgrade to 4.9.3, https://openxt.atlassian.net/browse/OXT-1448[OXT-1448] 
+
+<<<
+
+:numbered:
+Security Fixes
+--------------
+
+- https://github.com/OpenXT/xenclient-oe/commit/f74ee30d7a47dbfb1265db90dda36aa34595f4cb[xenclient-oe/f74ee30d]: tboot: Upgrade to 1.9.6 and backports., https://openxt.atlassian.net/browse/OXT-1389[OXT-1389] https://openxt.atlassian.net/browse/OXT-1323[OXT-1323] https://openxt.atlassian.net/browse/OXT-1398[OXT-1398] 
+- https://github.com/OpenXT/xenclient-oe/commit/7cdc085cdf424015a3d4f67b59826af652ddfc2f[xenclient-oe/7cdc085c]: microcode: upgrade 20180703 -> 20180807, https://openxt.atlassian.net/browse/OXT-1400[OXT-1400] https://openxt.atlassian.net/browse/OXT-1427[OXT-1427] 
+- https://github.com/OpenXT/xenclient-oe/commit/1cca9135bb89a1d29ac0f45fd0c1fdd9c253762c[xenclient-oe/1cca9135]: linux: Proper fix for OOPS __radix_tree_lookup, https://openxt.atlassian.net/browse/OXT-1418[OXT-1418] https://openxt.atlassian.net/browse/OXT-1303[OXT-1303] 
+- https://github.com/OpenXT/xenclient-oe/commit/334ea40cdff5073e4279653243cd88fd9d177e87[xenclient-oe/334ea40c]: l1tf: Disable SMT on Xen., https://openxt.atlassian.net/browse/OXT-1426[OXT-1426] 
+- https://github.com/OpenXT/xenclient-oe/commit/281bfd481e8ee10310dc773be073c3289f78ab85[xenclient-oe/281bfd48]: xen: Backport XSA-269 v3., https://openxt.atlassian.net/browse/OXT-1420[OXT-1420] 
+- https://github.com/OpenXT/xenclient-oe/commit/90c401a71b1263a77e67cc95f9d89efe0ef1f797[xenclient-oe/90c401a7]: xen: Backport XSA-272 v3., https://openxt.atlassian.net/browse/OXT-1422[OXT-1422] 
+- https://github.com/OpenXT/xenclient-oe/commit/ce87cacc895387f9e692303fbd5f9427ed5fff0d[xenclient-oe/ce87cacc]: linux: Add XSA-270 Linux netback driver OOB access in hash handling, https://openxt.atlassian.net/browse/OXT-1421[OXT-1421] 
+- https://github.com/OpenXT/xenclient-oe/commit/ad0184d875415cbe21d22d5cf189369a53967c90[xenclient-oe/ad0184d8]: xen: upgrade to stable-4.9 tip., https://openxt.atlassian.net/browse/OXT-1425[OXT-1425] 
+
+<<<
+
+:numbered:
+Maintenance Changes
+-------------------
+
+- https://github.com/OpenXT/manager/commit/ab58e717713e87102da2405e90f280c251b1843e[manager/ab58e717]: xenmgr: Match multi-strings in dmi chassis type., https://openxt.atlassian.net/browse/OXT-796[OXT-796] 
+- https://github.com/OpenXT/openxt/commit/a00fbe60ef742ff9221dcb0c19954acac11a1c72[openxt/a00fbe60]: conf: Add seabios SRC_URI usual MIRROR, https://openxt.atlassian.net/browse/OXT-1410[OXT-1410] 
+- https://github.com/OpenXT/openxt/commit/6ccf9d26d7548793d1b14317e642ba69156e7827[openxt/6ccf9d26]: meta-selinux: Upgrade layer., https://openxt.atlassian.net/browse/OXT-1428[OXT-1428] https://openxt.atlassian.net/browse/OXT-1429[OXT-1429] https://openxt.atlassian.net/browse/OXT-1430[OXT-1430] 
+- https://github.com/OpenXT/xenclient-oe/commit/1fe2c11880ef8a0573476d3bc6353fa0874fd56a[xenclient-oe/1fe2c118]: seabios: Change source URL, https://openxt.atlassian.net/browse/OXT-1410[OXT-1410] 
+- https://github.com/OpenXT/xenclient-oe/commit/f74ee30d7a47dbfb1265db90dda36aa34595f4cb[xenclient-oe/f74ee30d]: tboot: Upgrade to 1.9.6 and backports., https://openxt.atlassian.net/browse/OXT-1389[OXT-1389] https://openxt.atlassian.net/browse/OXT-1323[OXT-1323] https://openxt.atlassian.net/browse/OXT-1398[OXT-1398] 
+- https://github.com/OpenXT/xenclient-oe/commit/67c8ca94fda001a812fd5671411cc9a55c4883b1[xenclient-oe/67c8ca94]: seabios: Remove PREMIRRORS statement., https://openxt.atlassian.net/browse/OXT-1410[OXT-1410] 
+- https://github.com/OpenXT/xenclient-oe/commit/49874d0e9c70de402577fc243cac640d78c89a4d[xenclient-oe/49874d0e]: refpolicy-mcs: give updatemgr overcommit read perm, https://openxt.atlassian.net/browse/OXT-1365[OXT-1365] 
+- https://github.com/OpenXT/xenclient-oe/commit/7cdc085cdf424015a3d4f67b59826af652ddfc2f[xenclient-oe/7cdc085c]: microcode: upgrade 20180703 -> 20180807, https://openxt.atlassian.net/browse/OXT-1400[OXT-1400] https://openxt.atlassian.net/browse/OXT-1427[OXT-1427] 
+- https://github.com/OpenXT/xenclient-oe/commit/3f1ac5a509855f59a60990aba58b85e7e43aed88[xenclient-oe/3f1ac5a5]: e2fsprog: Backport patches against pyro., https://openxt.atlassian.net/browse/OXT-1428[OXT-1428] https://openxt.atlassian.net/browse/OXT-1429[OXT-1429] https://openxt.atlassian.net/browse/OXT-1430[OXT-1430] 
+- https://github.com/OpenXT/xenclient-oe/commit/85d6d4068468efb546490d572939e362ccb20683[xenclient-oe/85d6d406]: tboot: PCR Event types override option to pcr-calc, https://openxt.atlassian.net/browse/OXT-1438[OXT-1438] 
+- https://github.com/OpenXT/xenclient-oe/commit/803a7e2bc9049707996914089c2c7a4ab9578dc9[xenclient-oe/803a7e2b]: oxt-ml: Add seal-system.conf., https://openxt.atlassian.net/browse/OXT-1438[OXT-1438] 
+- https://github.com/OpenXT/xenclient-oe/commit/1cca9135bb89a1d29ac0f45fd0c1fdd9c253762c[xenclient-oe/1cca9135]: linux: Proper fix for OOPS __radix_tree_lookup, https://openxt.atlassian.net/browse/OXT-1418[OXT-1418] https://openxt.atlassian.net/browse/OXT-1303[OXT-1303] 
+- https://github.com/OpenXT/xenclient-oe/commit/334ea40cdff5073e4279653243cd88fd9d177e87[xenclient-oe/334ea40c]: l1tf: Disable SMT on Xen., https://openxt.atlassian.net/browse/OXT-1426[OXT-1426] 
+- https://github.com/OpenXT/xenclient-oe/commit/281bfd481e8ee10310dc773be073c3289f78ab85[xenclient-oe/281bfd48]: xen: Backport XSA-269 v3., https://openxt.atlassian.net/browse/OXT-1420[OXT-1420] 
+- https://github.com/OpenXT/xenclient-oe/commit/90c401a71b1263a77e67cc95f9d89efe0ef1f797[xenclient-oe/90c401a7]: xen: Backport XSA-272 v3., https://openxt.atlassian.net/browse/OXT-1422[OXT-1422] 
+- https://github.com/OpenXT/xenclient-oe/commit/5053aed04c6406ce19aa8456e9c81eabe9d55d75[xenclient-oe/5053aed0]: linux: micro upgrade to 4.14.63, https://openxt.atlassian.net/browse/OXT-1415[OXT-1415] 
+- https://github.com/OpenXT/xenclient-oe/commit/b0016240deccd20694b9f67ec86d16d293286320[xenclient-oe/b0016240]: linux: Update bandaid for l1tf, https://openxt.atlassian.net/browse/OXT-1415[OXT-1415] 
+- https://github.com/OpenXT/xenclient-oe/commit/6f7a204f40f0e38a26ee3c4ff903a643f813b66a[xenclient-oe/6f7a204f]: linux: uprev to 4.14.66, https://openxt.atlassian.net/browse/OXT-1415[OXT-1415] 
+- https://github.com/OpenXT/xenclient-oe/commit/ce87cacc895387f9e692303fbd5f9427ed5fff0d[xenclient-oe/ce87cacc]: linux: Add XSA-270 Linux netback driver OOB access in hash handling, https://openxt.atlassian.net/browse/OXT-1421[OXT-1421] 
+- https://github.com/OpenXT/xenclient-oe/commit/ad0184d875415cbe21d22d5cf189369a53967c90[xenclient-oe/ad0184d8]: xen: upgrade to stable-4.9 tip., https://openxt.atlassian.net/browse/OXT-1425[OXT-1425] 
+- https://github.com/OpenXT/xenclient-oe/commit/42301051c8adfff18c04e0c53d7ec686c0353d28[xenclient-oe/42301051]: intel-microcode: update to 20180425, https://openxt.atlassian.net/browse/OXT-1400[OXT-1400] 
+- https://github.com/OpenXT/xenclient-oe/commit/4ff75313973eb536b7abff86a161950314ec8d29[xenclient-oe/4ff75313]: intel-microcode: upgrade 20180425 -> 20180703, https://openxt.atlassian.net/browse/OXT-1400[OXT-1400] 
+- https://github.com/OpenXT/openxt/commit/b829c4b79094768754143db4c14e2025726d14e5[openxt/b829c4b7]: ltrace: add new URL to MIRRORS
+- https://github.com/OpenXT/xenclient-oe/commit/d92f8cb3af78966fec905b824e4d5ed3c5e1287c[xenclient-oe/d92f8cb3]: xkeyboard-config: update URL
+- https://github.com/OpenXT/xenclient-oe/commit/3bdb65570f2509bd554da67f18ea3f4ea7e4b8b1[xenclient-oe/3bdb6557]: dialog: fix URL
+- https://github.com/OpenXT/xenclient-oe/commit/bfbd4941108f35ddf6c4206eed4409026232628d[xenclient-oe/bfbd4941]: xfwm: start as daemon instead of background
+Not sure why that changes anything, but this is what xfce does by default,
+and it ensures terminals always spawn in the foreground.
+- https://github.com/OpenXT/xenclient-oe/commit/40f05b875ef9ae496fc470f8f45cf50cc6e581c8[xenclient-oe/40f05b87]: libsemanage: Upstream python depends is fixed.
+- https://github.com/OpenXT/xenclient-oe/commit/836f1610b2036858de87f07ded13df4ea4579344[xenclient-oe/836f1610]: tboot: Refresh pcr-calc patch.
+- https://github.com/OpenXT/xenclient-oe/commit/f4018f2e1de07ce82de362c5dc03433cbcf0af0d[xenclient-oe/f4018f2e]: oxt-ml: Remove redundant tpm2 test.
+- https://github.com/OpenXT/xenclient-oe/commit/44bbb0957810030358086d160ca1b80ec2175567[xenclient-oe/44bbb095]: blktap: Amend sanity check.
+
+<<<
+
+:numbered:
+Testing
+-------
+
+==== Test Criteria
+
+Limited testing was conducted and published on the stable-8 branch. 8.0.1 release Quality Assurance testing was conducted on downstream derivatives which may include changes. The following list summarize publicly disclosed test results.
+
+===== HVM guests environments
+ * Windows10 1709 64 bit
+ * Fedora 27 (note: blacklist bochs_drm required from installation)
+ * Debian 8 (Jessie) 64 bit (note: blacklist bochs_drm required from installation)
+
+===== Tested platforms
+* Dell
+ - Dell Latitude E7450
+ - Dell Latitude E7470
+ - Dell Latitude E7480
+ - Dell Latitude E7490
+ - Dell Optiplex 7050
+
+* HP
+ - HP 800 G1
+ - HP 800 G2
+ - HP 850 G2
+
+===== Tests logs
+
+ * [Measurement](https://openxt.atlassian.net/wiki/spaces/TEST/pages/620789765/OpenXT+8.0+Measurement+test)
+ * [OTA upgrade](https://openxt.atlassian.net/wiki/spaces/~eric-ch/pages/625967109/OTA+upgrade+test)
+
+<<<
+
+:numbered:
+Known Issues
+------------
+
+==== QEMU Audio does not work in Windows/Linux VMs
+
+The default emulated audio device is an ac97 device and Windows 7 and later no longer packages an ac97 driver.
+
+The user has two options for audio,
+[horizontal]
+[width="5%"]
+*"ac97"*:: provides working audio with slight crackling
+   - Linux should detect and load ac97 driver.
+   - Windows, download and install drivers from Realtek.
+*"hda"*:: provides poor audio quality and severe crackling
+   - Linux should detect and load intel_hda driver.
+   - Windows automatically installs drivers
+
+To use "hda", you will need to enter the following in Dom0 terminal window,
+[source,sh]
+----
+db-write /vm/$( xec-vm -n "<vm name>" get uuid )/config/sound hda
+----
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-939[OXT-939]
+
+==== Nvidia Quadro NVS 310, PCI GPU pass-through
+
+Nvidia Quadro NVS 310 GPU passthrough is not supported in OpenXT 8.0.1.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1070[OXT-1070]
+
+==== Host S3 resume results in a panic early in Xen and reboot
+
+Host S3 is not supported in OpenXT 8.0.1.
+ 
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1092[OXT-1092]
+
+==== Host S3 hangs on Broadwell and newer systems
+
+Host S3 is not supported in OpenXT 8.0.1.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1093[OXT-1093]
+
+==== More than 4 emulated IDE devices cause QEMU to fail to start
+
+OpenXT 8.0.1 limits a VM to a maximum of four emulated IDE devices (CD/DVD/HDD) being attached at one time.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1123[OXT-1123]
+
+==== Deleting a VM when a USB Device has attached with "Always use with this VM"
+
+If a USB device has been exclusively assigned to a VM and that VM is deleted, then the USB device will no longer be available to assign to another VM.
+
+It is recommended to disconnect any USB devices from a VM before deleting the VM.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-930[OXT-930]
+
+==== Windows guest intermittently/randomly does not shut down
+
+During testing, it appears that the presence of the "scsifilt.sys" driver can inhibit Windows guests from properly shutting down.
+
+When attempting to shut down a Windows guest and it's state in the UIVM is "On" and not "Shutting Down", then the VM will need to be halted using the "Force Shutdown" option from the VMs menu in the UIVM.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1240[OXT-1240]
+
+==== Raw disk can no longer be assigned to VMs
+
+OpenXT 8.0.1 does not support RAW disk assignement to HVM guests with stub-domain.
+
+To assign a RAW disk to a guest:
+[source,sh]
+----
+xec-vm -n <vm-name> --disk <disk-id> set phys-type phy
+xec-vm -n <vm-name> --disk <disk-id> set phys-path <disk-image-path>
+----
+Then disable the stub-domain:
+[source,sh]
+----
+xec-vm -n <vm-name> set stubdom false
+----
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1356[OXT-1356]
+
+==== UIVM creation fails at boot randomly
+
+In relatively rare occurences, UIVM may fail to start.
+Two sets of symptoms have been identified.
+- xec-vm may report UIVM stuck in "creating" state
+- UIVM kernel may report module i915 OOPs'ed
+
+In both cases, restarting UIVM is the recommended work-around. Should a remote
+connection not be available, restarting the platform is the only option.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1235[IXT-1235]
+
+==== PV-tools installation script will fail on Fedora 26
+
+OpenXT 8.0.1 does not provide a PV-tools installation script for Fedora 26.
+
+Manual build and installation of the Linux PV-tools is possible.
+
+Sources can be fetched from upstream repositories
+ - https://github.com/OpenXT/pv-linux-drivers
+ - https://github.com/OpenXT/v4v
+
+To install V4V module:
+[source,sh]
+----
+user@host:~$ git clone https://github.com/openxt/v4v && cd v4v/v4v
+user@host:~$ git checkout tags/8.0.1 -b openxt-8.0.1
+user@host:~$ make
+user@host:~$ sudo make install
+----
+using dkms is also possible:
+[source,sh]
+----
+user@host:~$ git clone https://github.com/openxt/v4v && cd v4v
+user@host:~/v4v$ git checkout tags/8.0.1 -b openxt-8.0.1
+user@host:~/v4v$ sudo cp -r v4v /usr/src/v4v-1.0
+user@host:~/v4v$ sudo dkms add v4v/1.0
+user@host:~/v4v$ sudo dkms install v4v/1.0
+----
+
+To install OpenXT-VUSB module:
+[source,sh]
+----
+user@host:~$ git clone https://github.com/pv-linux-drivers && cd pv-linux-drivers/openxt-vusb
+user@host:~$ git checkout tags/8.0.1 -b openxt-8.0.1
+user@host:~$ make
+user@host:~$ sudo make install
+----
+using dkms is also possible:
+[source,sh]
+----
+user@host:~$ git clone https://github.com/openxt/pv-linux-drivers && cd pv-linux-drivers
+user@host:~/v4v$ git checkout tags/8.0.1 -b openxt-8.0.1
+user@host:~/v4v$ sudo cp -r openxt-vusb /usr/src/openxt-vusb-1.0
+user@host:~/v4v$ sudo dkms add openxt-vusb/1.0
+user@host:~/v4v$ sudo dkms install openxt-vusb/1.0
+----
+
+You will need xenstore utilities to report PV-tools installation from the guest to the OpenXT management stack. It is recommended to use the packaged provided by the guest's distribution (Debian: xenstore-utils, CentOS: xen-runtime, etc).
+Once installed, report PV drivers installation to OpenXT management stack from the guest:
+[source,sh]
+----
+user@host:~$ xenstore-exists "attr/PVAddons" || xenstore-write "attr/PVAddons" ""
+user@host:~$ xenstore-write "attr/PVAddons/Installed"  "1"
+user@host:~$ xenstore-write "attr/PVAddons/MajorVersion"  "8"
+user@host:~$ xenstore-write "attr/PVAddons/MinorVersion"  "0"
+user@host:~$ xenstore-write "attr/PVAddons/MicroVersion"  "1"
+user@host:~$ xenstore-write "attr/PVAddons/BuildVersion"  ""
+----
+
+The guest should now have access to PV-USB devices. V4V is not required to use PV-USB devices.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1204[OXT-1204]
+
+==== Connected USB storage measured as part of vendor measurements
+
+Some systems will measure the presence of connected USB devices during sealing operation. This will result in measurement failing if the USB device is removed on the next platform reboot.
+This cannot be worked-around and resealing the platform without the removable media is the only known option. Firmware updates may be provided by the platform OEM to change this behavior.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1129[OXT-1129]
+
+==== EFI BootOrder Changes breaking ML unsealing
+
+Some systems (e.g, HP 800 G3) have their EFI boot order changed after rebooting from initial sealing into OpenXT, on first boot following the installation.
+The EFI boot order is presumed to be re-written only once upon initial reboot. Current work-around is to verify that measurement failed on PCR-01 only by booting into the untrusted system, then reboot and reseal the platform.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1391[OXT-1391]
+
+==== XSA-274: Uninitialized state in Linux x86 PV failsafe callback path
+
+Guests running Linux 64bit PV guests should seek documentation and follow
+updates from the operating system distributor. Recent Linux kernels already
+have the fix (released post August 2018).
+
+* See link:https://xenbits.xen.org/xsa/advisory-274.html[XSA-274]
+
+
+<<<
+
+:numbered:
+Contributors
+------------
+
+- Jason Andryuk <jandryuk@gmail.com>
+- Jed <lejosnej@ainfosec.com>
+- Eric Chanudet <chanudete@ainfosec.com>
+
+<<<
+
+[appendix]
+License
+-------
+Copyright 2018 by <Assured Information Security, Inc>. Created by Eric Chanudet <chanudete@ainfosec.com>. This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
