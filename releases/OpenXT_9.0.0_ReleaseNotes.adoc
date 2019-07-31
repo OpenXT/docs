@@ -1,0 +1,1134 @@
+OpenXT 9.0.0 Release
+====================
+rogersc <rogersc@ainfosec.com>
+v1.0, July 2019: First revision
+:toc:
+
+:numbered:
+Platform
+--------
+
+
+==== Introduction
+
+These are the Release Notes for the 9.0.0 release of OpenXT.  The 9.0.0 release strives to modernize OpenXT and align many of its core components with upstream.
+For example, 9.0.0 is shipping with:
+
+* Xen 4.12 and Linux LTS 4.19
+* "Argo", the successor to v4v
+* 64-bit dom0 and service vms
+* upstream blktap3
+* Initial support for HVM UEFI Guests
+* SRTM+DRTM for Host UEFI installs
+
+In future releases, the OpenXT Maintainers and Contributors hope to build upon this foundation of modernization, offering new features, and continuing to align with modern,
+upstream software packages.
+
+Finally, thank you to everyone in the community who contributed to the 9.0.0 release, it wouldn't have been possible without your hard work and dedication.
+
+==== OE Layers and Core Component Versions
+
+The 9.0.0 release is a tagged checkpoint of the stable-9 branch.
+
+- OpenEmbedded: Pyro
+  * openembedded-core: link:http://git.openembedded.org/openembedded-core/commit/?id=819aa151bd634122a46ffdd822064313c67f5ba5[819aa151bd build-appliance-image: Update to pyro head revision]
+  * meta-openembedded: link:http://git.openembedded.org/openembedded-core/commit/?id=9eaebc6e783f1394bb5444326cd05a976b3122e9[9eaebc6e7 wireshark: Update Package to 2.2.12]
+  * meta-intel: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-intel/commit/?id=df4b25bcd31ece5369eca36d6f3590d98553336a[df4b25bcd linux-intel/4.9: update to 4.9.116]
+  * meta-java: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-java/commit/?id=0c27b120aa508e4bb41394b8dd3645949a611128[0c27b12 icedtea-native: Fix segmentation build during build]
+  * meta-selinux: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-selinux/commit/?id=b1dac7e2b26f869c991c6492aa7fa18eaa4b47f6[b1dac7e policycorutils: package files in base_sbindir.]
+  * meta-virtualization: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-virtualization/commit/?id=e3402d96f288b65c58ef24ae638c3f4e88dedf90[e3402d9 seabios: update SRC_URI to: https://www.seabios.org/downloads/]
+- Xen: 4.12.1-pre
+  * xen: link:http://xenbits.xen.org/gitweb/?p=xen.git;a=commit;h=b4f291b0ca914454cbac9fa5580bb35f8ab04eee[b4f291b xl: handle PVH type in apply_global_affinity_masks again]
+- Linux kernels: 4.19.53
+  * linux link:https://github.com/torvalds/linux/commit/9f31eb60d7a23536bf3902d4dc602f10c822b79e[9f31eb6 Linux 4.19.53]
+
+==== Measurement support
+
+OpenXT supports two modes of measurement. Each mode is enforced automatically depending on the boot method of the OpenXT installation (Legacy vs UEFI).
+
+As for Legacy or UEFI support, it is not currently possible to transistion or upgrade an existing OpenXT installation from Legacy to UEFI, therefore it is not possible to change an existing measurement scheme or forward seal against a different one.
+
+===== Legacy boot
+
+Legacy installation will perform DRTM measurement using TBoot. It requires a compatible TPM chip and TXT to be enabled in the BIOS before installing OpenXT.
+
+===== UEFI
+
+UEFI installation will perform SRTM+DRTM measurement. It requires a compatible TPM chip and TXT to be enabled in the BIOS before installing OpenXT.
+
+==== Package upgrades: Dom0
+
+* atapi-pt-helper: 0+git0+916b9bfc35-r0 -> 0+git0+b29a2fd833-r0
+* audio-helper: 0+git0+916b9bfc35-r0 -> 0+git0+b29a2fd833-r0
+* blktap3: 0+git0+4c8e89be4e-r0 -> 0+git0+a7832564b4-r0
+* compleat: 0+git0+916b9bfc35-r0 -> 0+git0+b29a2fd833-r0
+* curl: 7.54.0-r0 -> 7.65.1-r0
+* dbd: git-r0 -> 0+git0+eec9ec9068-r0
+* dialog: 1.2-20150225-r0 -> 1.3-20160828-r0
+* dm-agent: 0+git0+ccfca235de-r0 -> none
+* drm-surfman-plugin: 0+git0+3263678cd1-r0 -> 0+git0+f972c2d33e-r0
+* fbtap: 0+git0+c81549a8f4-r0 -> 0+git0+2edd6c7ae1-r0
+* heimdallr: git-r0 -> 0+git0+16b0da1e69-r0
+* intel-microcode: 20180807-r0 -> 20190514a-r0
+* iproute2: 4.10.0-r0.2 -> 4.10.0-r0
+* kernel: 4.14.66-r0 -> 4.19.53-r0
+* libcurl4: 7.54.0-r0 -> 7.65.1-r0
+* libdmbus-0.1-1: 0+git0+916b9bfc35-r0 -> 0+git0+b29a2fd833-r0
+* libicbinn-1.0-0: 0+git0+760f5b3553-r0 -> 0+git0+00e4535ebd-r0
+* libicbinn-1.0-server: 0+git0+760f5b3553-r0 -> 0+git0+00e4535ebd-r0
+* libidn: 1.33-r0 -> 2.2.0-r0
+* libpci3: 3.5.2-r0 -> 3.5.2-r0.1
+* libsapi0: git.0+56fec897d5-r0 -> none
+* libsndfile1: 1.0.27-r0 -> 1.0.28-r0
+* libsqlite3-0: 3:3.17.0-r0 -> 3:3.29.0-r0
+* libsurfman-2.1-0: 0+git0+3263678cd1-r0 -> 0+git0+f972c2d33e-r0
+* libtcti: git.0+56fec897d5-r0 -> none
+* libtirpc: 1.0.2-r0 -> 1.1.4-r0
+* libv4v: git0+c0c98489b4-r0 -> none
+* libxch-rpc: 0+git0+c47783e944-r0 -> 0+git0+27af244d20-r0
+* libxchdb: 0+git0+c47783e944-r0 -> 0+git0+27af244d20-r0
+* libxchutils: 0+git0+c47783e944-r0 -> 0+git0+27af244d20-r0
+* libxchv4v: 0+git0+c47783e944-r0 -> none
+* libxchwebsocket: 0+git0+c47783e944-r0 -> 0+git0+27af244d20-r0
+* libxchxenstore: 0+git0+c47783e944-r0 -> 0+git0+27af244d20-r0
+* libxcxenstore: 0+git0+c47783e944-r1 -> 0+git0+27af244d20-r1
+* libxencall1: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* libxenctrl4.9: 4.9.3-r0 -> none
+* libxendevicemodel1: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* libxenevtchn1: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* libxenforeignmemory1: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* libxengnttab1: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* libxenguest4.9: 4.9.3-r0 -> none
+* libxenlight4.9: 4.9.3-r0 -> none
+* libxenmgr-core: 0+git0+08ef5856d8-r0 -> 0+git0+eec9ec9068-r0
+* libxenstat0: 4.9.3-r0 -> none
+* libxenstore3.0: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* libxentoollog1: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* libxlutil4.9: 4.9.3-r0 -> none
+* linux-firmware: 1:0.0+git0+6f5257c629-r0 -> 1:0.0+git0+7bc2464513-r0
+* linuxfb-surfman-plugin: 0+git0+3263678cd1-r0 -> 0+git0+f972c2d33e-r0
+* modules: 1.0-r1 -> none
+* nss: 3.34.1-r0 -> 3.45-r0
+* pciutils: 3.5.2-r0 -> 3.5.2-r0.1
+* qemu-dm: 2.6.2-r17.6 -> 3.1.0-r17.6
+* qmp-helper: 0+git0+916b9bfc35-r0 -> 0+git0+b29a2fd833-r0
+* rpc-proxy: 0+git0+08ef5856d8-r0 -> 0+git0+eec9ec9068-r0
+* rpcbind: 0.2.4-r0 -> none
+* shim: 14+git0+3ad44002b7-r0 -> 14+git0+6c8d08c0af-r0
+* surfman: 0+git0+3263678cd1-r0 -> 0+git0+f972c2d33e-r0
+* tboot: 1.9.6-r0 -> 1.9.9-r0
+* tpm2-tools: git.0+33cd0d966f-r0 -> 3.1.3-r0
+* udbus: 0+git0+c47783e944-r0 -> 0+git0+27af244d20-r0
+* uid: git-r0 -> 0+git0+85bdfe0334-r0
+* updatemgr: 0+git0+08ef5856d8-r0 -> 0+git0+eec9ec9068-r0
+* upgrade-db: 0+git0+08ef5856d8-r0 -> 0+git0+eec9ec9068-r0
+* v4v-module: git0+c0c98489b4-r0 -> none
+* vusb-daemon: 0+git0+f0275111fc-r0 -> 0+git0+873765e2d4-r0
+* wget: 1.19.1-r0 -> 1.19.2-r0
+* xcpmd: 0+git0+916b9bfc35-r0 -> 0+git0+b29a2fd833-r0
+* xec: 0+git0+08ef5856d8-r0 -> 0+git0+eec9ec9068-r0
+* xen: 4.9.3+git0+85af12d841-r0 -> RELEASE-4.12.0+git0+41658b5c44-r0
+* xenclient-feed-configs: 1909-r15 -> 6676-r15
+* xenclient-input-daemon: 0+git0+081e565e74-r0 -> 0+git0+b67f92fd99-r0
+* xenclient-nwd: 0+git0+6ee8cc614b-r0 -> 0+git0+35376b1438-r0
+* xenclient-toolstack: 0+git0+7702618789-r0 -> 0+git0+a5ca565cb6-r0
+* xenmgr: 0+git0+08ef5856d8-r0 -> 0+git0+eec9ec9068-r0
+* xenmgr-data: 0+git0+b0490a4aa5-r0 -> 0+git0+faf5aaabfc-r0
+* argo-module: none -> git0+2bb6f34f92-r0
+* ipxe: none -> gitr0+827dd1bfee-r0
+* libargo: none -> git0+2bb6f34f92-r0
+* libargo-bin: none -> git0+2bb6f34f92-r0
+* libxchargo: none -> 0+git0+27af244d20-r0
+* libxenctrl4.12: none -> RELEASE-4.12.0-r0
+* libxenguest4.12: none -> RELEASE-4.12.0-r0
+* libxenlight4.12: none -> RELEASE-4.12.0-r0
+* libxenstat4.12: none -> RELEASE-4.12.0-r0
+* libxentoolcore1: none -> RELEASE-4.12.0-r0
+* libxlutil4.12: none -> RELEASE-4.12.0-r0
+* modules-dom0: none -> 1.0-r1.1
+* ovmf: none -> git-r0
+* rsyslog-conf-dom0: none -> 1.0-r0
+* tpm2-tss: none -> 2.0.0-r0
+* txt-info-module: none -> 1.0-r0
+
+==== Package upgrades: UIVM
+
+* aspell: 0.60.6.1-r1 -> none
+* enchant: 1.6.0-r3 -> none
+* iproute2: 4.10.0-r0.2 -> 4.10.0-r0
+* kernel: 4.14.66-r0 -> 4.19.53-r0
+* libaspell15: 0.60.6.1-r1 -> none
+* libdrm: 2.4.75-r0 -> none
+* libepoxy0: 1.4.0-r0 -> none
+* libgl-mesa: 2:17.0.2-r0 -> none
+* libglapi0: 2:17.0.2-r0 -> none
+* libicbinn-1.0-0: 0+git0+760f5b3553-r0 -> 0+git0+00e4535ebd-r0
+* libicbinn-1.0-client: 0+git0+760f5b3553-r0 -> 0+git0+00e4535ebd-r0
+* libpci3: 3.5.2-r0 -> 3.5.2-r0.1
+* libsm6: 1:1.2.2-r0.1 -> 1:1.2.2-r0
+* libsndfile1: 1.0.27-r0 -> 1.0.28-r0
+* libsqlite3-0: 3:3.17.0-r0 -> 3:3.29.0-r0
+* libtirpc: 1.0.2-r0 -> 1.1.4-r0
+* libv4v: git0+c0c98489b4-r0 -> none
+* libxenstore3.0: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* libxfont1: 1:1.5.2-r0 -> none
+* libxi6: 1:1.4.5-r0 -> 1:1.7.9-r0
+* libxklavier16: 5.0-r0.1 -> 5.4-r0
+* libxrandr2: 1:1.3.2-r0 -> 1:1.5.1-r0
+* libxxf86vm1: 1:1.1.4-r0 -> none
+* mesa-megadriver: 2:17.0.2-r0 -> none
+* modules: 1.0-r1 -> none
+* pciutils: 3.5.2-r0 -> 3.5.2-r0.1
+* rpcbind: 0.2.4-r0 -> none
+* v4v-module: git0+c0c98489b4-r0 -> none
+* xdotool: 2.20100818.3004-r0 -> none
+* xen: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* xenclient-feed-configs: 1909-r15 -> 6676-r15
+* xenfb2: 0+git0+fad222619c-r0 -> 0+git0+1c1275efa9-r0
+* xf86-input-evdev: 2:2.6.0-r17.0 -> 2:2.10.5-r0
+* xf86-input-keyboard: 2:1.6.1-r17.0 -> 2:1.9.0-r0
+* xf86-input-mouse: 2:1.7.1-r17.0 -> 2:1.9.2-r0
+* xf86-video-fbdev: 2:0.4.2-r17.0.1 -> 2:0.4.4-r0
+* xkeyboard-config: 1.4-r4 -> 2.20-r0
+* xrandr: 1:1.3.5-r1 -> 1:1.5.0-r0
+* xserver-xf86-config: 0.1-r33.1 -> 0.1-r33
+* xserver-xorg: 2:1.11.2-r1.2 -> 2:1.19.5-r0
+* argo-module: none -> git0+2bb6f34f92-r0
+* iso-codes: none -> 3.74-r0
+* libargo: none -> git0+2bb6f34f92-r0
+* libargo-bin: none -> git0+2bb6f34f92-r0
+* libevdev: none -> 1.5.6-r0
+* libinput: none -> 1.6.1-r0
+* libxentoolcore1: none -> RELEASE-4.12.0-r0
+* libxfont2-2: none -> 2.0.1-r0
+* modules-uivm: none -> 1.0-r1.1
+* mtdev: none -> 1.1.5-r0
+* rsyslog-conf: none -> 8.22.0-r0
+* xf86-input-libinput: none -> 2:0.24.0-r0
+
+==== Package upgrades: NDVM (Network)
+
+* carrier-detect: 0+git0+916b9bfc35-r0 -> 0+git0+b29a2fd833-r0
+* db-tools: 0+git0+08ef5856d8-r0 -> 0+git0+eec9ec9068-r0
+* iproute2: 4.10.0-r0.2 -> 4.10.0-r0
+* kernel: 4.14.66-r0 -> 4.19.53-r0
+* libicbinn-1.0-0: 0+git0+760f5b3553-r0 -> 0+git0+00e4535ebd-r0
+* libicbinn-1.0-client: 0+git0+760f5b3553-r0 -> 0+git0+00e4535ebd-r0
+* libpci3: 3.5.2-r0 -> 3.5.2-r0.1
+* libtirpc: 1.0.2-r0 -> 1.1.4-r0
+* libv4v: git0+c0c98489b4-r0 -> none
+* libxenstore3.0: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* linux-firmware: 1:0.0+git0+6f5257c629-r0 -> 1:0.0+git0+7bc2464513-r0
+* modules: 1.0-r1 -> none
+* pciutils: 3.5.2-r0 -> 3.5.2-r0.1
+* rpcbind: 0.2.4-r0 -> none
+* v4v-module: git0+c0c98489b4-r0 -> none
+* wget: 1.19.1-r0 -> 1.19.2-r0
+* xen: 4.9.3-r0 -> RELEASE-4.12.0-r0
+* xenclient-feed-configs: 1909-r15 -> 6676-r15
+* xenclient-nws: 0+git0+6ee8cc614b-r0 -> 0+git0+35376b1438-r0
+* xenclient-toolstack: 0+git0+7702618789-r0 -> 0+git0+a5ca565cb6-r0
+* argo-module: none -> git0+2bb6f34f92-r0
+* libargo: none -> git0+2bb6f34f92-r0
+* libargo-bin: none -> git0+2bb6f34f92-r0
+* libxentoolcore1: none -> RELEASE-4.12.0-r0
+* modules-ndvm: none -> 1.0-r1.1
+* rsyslog-conf: none -> 8.22.0-r0
+
+<<<
+
+:numbered:
+Feature Additions
+-----------------
+
+- https://github.com/OpenXT/xenclient-oe/commit/f2bc86edc3e2539208da7e2077afa2ecec43e90b[xenclient-oe/f2bc86ed]: xterm: Enable TrueType fonts, https://openxt.atlassian.net/browse/OXT-1509[OXT-1509] 
+- https://github.com/OpenXT/xenclient-oe/commit/ada91543393abd7337ddc73bdc75e14cce2e2e7e[xenclient-oe/ada91543]: xsessionconfig: Use monospace font for xterm, https://openxt.atlassian.net/browse/OXT-1509[OXT-1509] 
+- https://github.com/OpenXT/idl/commit/ba0219026c5d511724ce5d18350f8f15ccd12482[idl/ba021902]: idl: Add VirtType to support PVH, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/input/commit/2f546c8be0f4038f37aafa2371060d5cd25ed87b[input/2f546c8b]: input: Handle PVHv2 like PV guests., https://openxt.atlassian.net/browse/OXT-1648[OXT-1648] 
+- https://github.com/OpenXT/manager/commit/04ca4c24951fc978c7033eebd3b4dc3660c6af4b[manager/04ca4c24]: Fix XL VM config files for Xen 4.10, https://openxt.atlassian.net/browse/OXT-1277[OXT-1277] 
+- https://github.com/OpenXT/manager/commit/f638523fabe16b2b0b0267d27650f06f7c1421eb[manager/f638523f]: xenmgr: Add nogfx support, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/manager/commit/ed4632a2dc2922d5bfe5cdfa6f52359f7921b626[manager/ed4632a2]: xenmgr: Remove unused data type, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/manager/commit/bdf5bd023274c747900897c5b30de48b8a3c240e[manager/bdf5bd02]: PartTable: Fix for new fdisk, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/manager/commit/f87cfe1dd4105084b1d95c7fe5000437ce6c8345[manager/f87cfe1d]: xenmgr: Remove enumServiceVmTemplates, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/manager/commit/8e3a80b9b8fb08727b004068d29935be0e36c4cb[manager/8e3a80b9]: xenmgr: Select ndvm pv/hvm mode at runtime, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/manager/commit/1bfa509644b0f5c86727456796307196939f5d20[manager/1bfa5096]: templates: Update ndvm for partitioned disk image, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/manager/commit/519cfa7d25156d1062587322f2089ede41fb8d1f[manager/519cfa7d]: templates: Rename pv ndvm templates, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/manager/commit/2050e9115d4be7f989ef47542f0f098dd3b596fb[manager/2050e911]: templates: Add hvm ndvm templates, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/manager/commit/f6bc127d0aaec4e925cb781a651c194bce7c497a[manager/f6bc127d]: xenmgr: Honor /xenmgr/overwrite-ndvm-settings, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/manager/commit/c02ee587782d4f9c78c92036c72d8334b2ab7ffc[manager/c02ee587]: upgrade-db: Migration for partitioned disk ndvm, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/manager/commit/58aa0ffa21f644122c62d2af83b7bd97de98cfd3[manager/58aa0ffa]: upgrade-db: Syncvm flask label migration, https://openxt.atlassian.net/browse/OXT-1384[OXT-1384] 
+- https://github.com/OpenXT/manager/commit/ccc7c79e16f5e8b20a40256d394764ca7650135d[manager/ccc7c79e]: xenmgr: Add VirtType, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/manager/commit/a095b59690360981369460c308c6fce097865cc0[manager/a095b596]: xenmgr: Remove use of vmHvm, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/manager/commit/61f441136abaa27cbbfbbdea5484caabb64f4cf3[manager/61f44113]: xenmgr: Remove get/setVmHvm, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/manager/commit/671b1bf6c28dcc1b38099b9bbf9312f91c4c2de8[manager/671b1bf6]: xenmgr: Condition NIC configuration on stubdom && HVM, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/manager/commit/7ef5da23c8d9cb49ec399c041c787efa2e3bc840[manager/7ef5da23]: templates: Convert from hvm to virt-type, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/manager/commit/5ac4c13037656057ac65341fe840d76a6ee2652c[manager/5ac4c130]: Migration 39: Convert hvm to virt-type, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/manager/commit/2cf476ccb2229e22a424ffb6d1381e44d24d47ac[manager/2cf476cc]: xenmgr: Stubdom is only valid for HVM, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/manager/commit/2e0f8df0b36571928a70d87a30e51381a884038f[manager/2e0f8df0]: xenmgr: getVmStubdom only return True for HVM, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/meta-openxt-ocaml-platform/commit/79d907cad6ec68187270bf8cf95ef8c4c06f7a7f[meta-openxt-ocaml-platform/79d907ca]: OXT-1477 : Enable building OCaml binaries for x86_64, https://openxt.atlassian.net/browse/OXT-1477[OXT-1477] 
+- https://github.com/OpenXT/openxt/commit/dbb3b8b2f0eae0e36137f2f566cd98a7517bed8e[openxt/dbb3b8b2]: Xen: upgrade to 4.10.0, https://openxt.atlassian.net/browse/OXT-1277[OXT-1277] 
+- https://github.com/OpenXT/openxt/commit/36e031bc528403ca32834814e92ca5bfe6b6e86e[openxt/36e031bc]: do_build.sh: Copy .disk.vhd images, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/openxt/commit/40b43b98c62316e482965c71479f1f9489d36e7d[openxt/40b43b98]: manifest: Use NDVM partitioned disk image, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/openxt/commit/653690de11012aa04bbf2a282e4ca634325da045[openxt/653690de]: build-scripts: Build NDVM partitioned disk images, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/openxt/commit/b32d338c61bc6e6c5a3da0b00ac12ee1a73aab39[openxt/b32d338c]: debian_install.sh: do not fail when /etc/debian_version doesn't exist
+Debian variants like Devuan may not have that file., https://openxt.atlassian.net/browse/OXT-1470[OXT-1470] 
+- https://github.com/OpenXT/openxt/commit/a40f33f8a8f8d60ad9fb2adedb38777a1e7a3c72[openxt/a40f33f8]: build-scripts: remove architecture info from output files, https://openxt.atlassian.net/browse/OXT-1554[OXT-1554] https://openxt.atlassian.net/browse/OXT-1552[OXT-1552] 
+- https://github.com/OpenXT/openxt/commit/ea19daacb4067774383a275a63e43e0d13ed6ba9[openxt/ea19daac]: [debian] Temporary: Don't install xenmou driver, https://openxt.atlassian.net/browse/OXT-1608[OXT-1608] 
+- https://github.com/OpenXT/toolstack-data/commit/66d5f9e92ee802c24c1dc8efe72b7a00c11c274c[toolstack-data/66d5f9e9]: Switch to virt_type for PVH support, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/v4v/commit/e61b83ef0f927398bcc21c1dd3e458dc983e9bf8[v4v/e61b83ef]: Mark v4v file descriptors read-write, https://openxt.atlassian.net/browse/OXT-1304[OXT-1304] 
+- https://github.com/OpenXT/v4v/commit/b1dfe102c1aac9a68c63e5cccc0ac575f80dba36[v4v/b1dfe102]: Add v4v compat ioctl, https://openxt.atlassian.net/browse/OXT-1304[OXT-1304] 
+- https://github.com/OpenXT/xenclient-oe/commit/a6b1f2fcc7bd9fe1dda70b8679f694a5cb14c46a[xenclient-oe/a6b1f2fc]: Xen: upgrade to 4.10.0, https://openxt.atlassian.net/browse/OXT-1277[OXT-1277] 
+- https://github.com/OpenXT/xenclient-oe/commit/0a0f654cc58d866e1d0836337eec3da9c5596c4a[xenclient-oe/0a0f654c]: openxt_image_types: Add space to _append-ed CONVERSIONTYPES, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/a7afc375611f175161d30bfc18365ddeb98315ae[xenclient-oe/a7afc375]: openxt_image_types: Remove IMAGE_TYPES appending, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/83c48e3404f4bc65b5b77bf2728bdfed590526c4[xenclient-oe/83c48e34]: openxt-image-disk: Create partitioned disk image, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/f57b4c7e419a38700a40b39836745c1bf3e9a3a5[xenclient-oe/f57b4c7e]: xenclient-image-common: Inherit openxt-image-disk, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/f23ccdf95b286ed99a26bfbe5569382cf0837e2d[xenclient-oe/f23ccdf9]: Move KERNEL_IMAGETYPE to machine/xenclient-common.conf, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/43d5ed710387e59f92eb4ae353cdd572046b01f9[xenclient-oe/43d5ed71]: qemu-dm: Qubes PCI region size rounding, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/899d9887fc804fc06271cb6e4e3a7bcbc62ed556[xenclient-oe/899d9887]: qemu-dm: Avoid segfault in xenmou shutdown, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/827c73bc018fb18128a284ccfe47608851b6248d[xenclient-oe/827c73bc]: qemu-dm: Fix surfman-dcl segfault on shutdown, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/20d0330efab20ad1a826988eed5cb95c57d33da7[xenclient-oe/20d0330e]: linux: Update NDVM config for HVM, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/2102e1ac500575275a018e9e78a7a2742c97f79b[xenclient-oe/2102e1ac]: linux: Reduce ndvm kernel defconfig, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/c5884d46dfe973b33135f9dfb4eb8c48840fca95[xenclient-oe/c5884d46]: base-files: Use xvdb for NDVM swap disk, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/8b648b7b15be9ae8667ec2f441157df85d9a1fb9[xenclient-oe/8b648b7b]: ndvm-image: Switch to using partitioned disk, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/8a6df504dc26285d0f39139e1f13762171f404ce[xenclient-oe/8a6df504]: initrdscripts: Use xenstore for qemu arguments, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/160c33c3f686f1ce37a3aa58d1f329bedbe64f95[xenclient-oe/160c33c3]: xen-libxl: Drop openxt_qemu_args from stubdom kernel command line, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/f80e32835acf311ba765320e9ca86f25dff11773[xenclient-oe/f80e3283]: xen-libxl: Remove unnecessary code change, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/1c306c2094a61af11ed64679feae6e3f9f0d4ea9[xenclient-oe/1c306c20]: xen-libxl: Allow disabling HVM graphics, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/8c4891501e0647435f5cd450d29b99960da3035c[xenclient-oe/8c489150]: xen-libxl: Rearrange qemu argument additions, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/c3b68bc639a554bd7a5ca3b48006b5d7b38e2954[xenclient-oe/c3b68bc6]: xen-libxl: Conditionalize helper daemons, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/b2981e587984b6ad5539dc2ba8312e3d4836972c[xenclient-oe/b2981e58]: xen-libxl: Use a function to fork helpers, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/90f4992fd5ab8dbbc4eed9ad46141c46a33c5869[xenclient-oe/90f4992f]: Update create-ndvm for pv/hvm selection, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xenclient-oe/commit/b2127cb5d4231fcf66785ad061c0e89756af3c1b[xenclient-oe/b2127cb5]: qemu-dm: Import qemu-dm-wrapper from dm-agent, https://openxt.atlassian.net/browse/OXT-1381[OXT-1381] 
+- https://github.com/OpenXT/xenclient-oe/commit/265207d4a7666940ab103d789858e6efba92feb1[xenclient-oe/265207d4]: initrdscripts: Remove dm-agent from script, https://openxt.atlassian.net/browse/OXT-1381[OXT-1381] 
+- https://github.com/OpenXT/xenclient-oe/commit/31e984e3066f35c91be3c20841e56920b0c083ba[xenclient-oe/31e984e3]: initrdscripts: fix debug log level, https://openxt.atlassian.net/browse/OXT-1381[OXT-1381] 
+- https://github.com/OpenXT/xenclient-oe/commit/0c00b69a78f9d0014d02ed06847acef111cf9dc8[xenclient-oe/0c00b69a]: stubdomain-image: Remove dm-agent, https://openxt.atlassian.net/browse/OXT-1381[OXT-1381] 
+- https://github.com/OpenXT/xenclient-oe/commit/2a214cfcb9fe906da8b241ac1fabe1945a45eafd[xenclient-oe/2a214cfc]: packagegroup-dom0: Remove unused dm-agent, https://openxt.atlassian.net/browse/OXT-1381[OXT-1381] 
+- https://github.com/OpenXT/xenclient-oe/commit/621cde3ed0c230eae1df384f4e14ad0a9a7c8190[xenclient-oe/621cde3e]: dm-agent: Remove recipe, https://openxt.atlassian.net/browse/OXT-1381[OXT-1381] 
+- https://github.com/OpenXT/xenclient-oe/commit/52d702c86376fc4ef8862a88e3ede46fea0495b0[xenclient-oe/52d702c8]: refpolicy: Remove dm-agent, https://openxt.atlassian.net/browse/OXT-1381[OXT-1381] 
+- https://github.com/OpenXT/xenclient-oe/commit/d154c54fbb2e4bd42406094d0166f1a082cdb345[xenclient-oe/d154c54f]: xen: Bypass ACPI SLIC support for PVH, https://openxt.atlassian.net/browse/OXT-1383[OXT-1383] 
+- https://github.com/OpenXT/xenclient-oe/commit/0dec0d989f8a01acd5381d22bd3efddb937e3c4e[xenclient-oe/0dec0d98]: refpolicy-mcs: Allow loading signed modules, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/3a2060c5807e45e5638c9b49ef62957e6240c97f[xenclient-oe/3a2060c5]: modules-signing: Add basic support for signed modules, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/e79d05d5f28ca838d75172acf92e43acd22b2c99[xenclient-oe/e79d05d5]: module-signing: Allow external keys, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/88c360b44144f8de3e1e9c8a72dc20fd9573c863[xenclient-oe/88c360b4]: linux: dom0 module signing, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/929e97212e4d87993e73b7f961f0f0d1467785ab[xenclient-oe/929e9721]: linux: ndvm module signing, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/5eb1f9986eae401ad93583248e5340cc45d400ac[xenclient-oe/5eb1f998]: linux: uivm module signing, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/43ed16a341d276e04290e7d3ef0614ffdf00e8f8[xenclient-oe/43ed16a3]: linux: stubdom module signing, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/2393d816da9650ae63867ec3baf74afe8fc5ed0c[xenclient-oe/2393d816]: linux: syncvm module signing, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/7dcd42c3d19ee68528947dcd4cbf12737587ebd6[xenclient-oe/7dcd42c3]: rsyslog: Use custom format for VM messages, https://openxt.atlassian.net/browse/OXT-1409[OXT-1409] 
+- https://github.com/OpenXT/xenclient-oe/commit/c36e496c63a1b8fe67332630e161f52274077639[xenclient-oe/c36e496c]: module-signing: Fix SIG_HASH check, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/fb3f4c25ead9423b486914ce11fbe69d1ec33fe7[xenclient-oe/fb3f4c25]: module-signing: Find sign-file location at runtime, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/74dcc3f480775d4ee06cffa3c79e28fd9042c5ab[xenclient-oe/74dcc3f4]: qemu-dm: implement v4v stream, https://openxt.atlassian.net/browse/OXT-1407[OXT-1407] 
+- https://github.com/OpenXT/xenclient-oe/commit/42a43df01545a7ba4dc1a723e7ec6842cb154eb1[xenclient-oe/42a43df0]: qemu-dm: Drop close in chardev-v4v, https://openxt.atlassian.net/browse/OXT-1407[OXT-1407] 
+- https://github.com/OpenXT/xenclient-oe/commit/08b0b6d3ba3c8c225d4449d73fc9de3c279d357c[xenclient-oe/08b0b6d3]: openxt-ml: Do not mount ESP in seal-system., https://openxt.atlassian.net/browse/OXT-1397[OXT-1397] 
+- https://github.com/OpenXT/xenclient-oe/commit/bef5c4117c83672814161c6565c50bea4734b2a6[xenclient-oe/bef5c411]: Revert "refpolicy-mcs: Allow installer part2 to mount ESP.", https://openxt.atlassian.net/browse/OXT-1397[OXT-1397] 
+- https://github.com/OpenXT/xenclient-oe/commit/9e8ea326b8695c1c38e9ad397c7e79484f65afe9[xenclient-oe/9e8ea326]: module-signing: Fix SIGN_FILE error detection, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/1b18ae5d14ffddb605ae70051bc6945308f3c346[xenclient-oe/1b18ae5d]: module-signing: Serialize sign_modules with make_scripts, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/0325cdd2a7bf2de29475709070e0f755c6cd3213[xenclient-oe/0325cdd2]: libxl: Drop unneeded hunk from libxl-openxt-helpers.patch, https://openxt.atlassian.net/browse/OXT-1441[OXT-1441] 
+- https://github.com/OpenXT/xenclient-oe/commit/0ef89a5d7b7b9e65d03fa909745b8db27f686128[xenclient-oe/0ef89a5d]: libxl: Drop unneeded hunks from libxl-openxt-qemu-args.patch, https://openxt.atlassian.net/browse/OXT-1441[OXT-1441] 
+- https://github.com/OpenXT/xenclient-oe/commit/457cd98d9d203afa54910707c6389ba0e8054524[xenclient-oe/457cd98d]: Install qemu script as /etc/qemu-ifup, https://openxt.atlassian.net/browse/OXT-1441[OXT-1441] 
+- https://github.com/OpenXT/xenclient-oe/commit/fcc48fc56b7fa11874a768ed962617987f544550[xenclient-oe/fcc48fc5]: libxl: Drop -boot hunk from libxl-openxt-qemu-args.patch, https://openxt.atlassian.net/browse/OXT-1441[OXT-1441] 
+- https://github.com/OpenXT/xenclient-oe/commit/f86fcd3ba954e18ae5e9617eaf1ef1f558dcefa8[xenclient-oe/f86fcd3b]: xen-libxl: Move hunk, https://openxt.atlassian.net/browse/OXT-1441[OXT-1441] 
+- https://github.com/OpenXT/xenclient-oe/commit/b194122464a03d7f09c6e253247578cb873c82d5[xenclient-oe/b1941224]: libxl: Refresh patch queue, https://openxt.atlassian.net/browse/OXT-1441[OXT-1441] 
+- https://github.com/OpenXT/xenclient-oe/commit/aa1aea57a722c6e5740922e5d0be770b3605609d[xenclient-oe/aa1aea57]: lvm udev rules: avoid trying to create bad symlinks
+lvm expects /dev/mapper to be populated with symlinks,
+but instead it contains actual blk files.
+Remove the rule that creates those symlinks., https://openxt.atlassian.net/browse/OXT-1274[OXT-1274] 
+- https://github.com/OpenXT/xenclient-oe/commit/40b9823b755abc57988f5f9e0a994ac3ef4ffbda[xenclient-oe/40b9823b]: [tpm2-tools] Uprev from v2.0.0 to v3.1.3, https://openxt.atlassian.net/browse/OXT-1456[OXT-1456] 
+- https://github.com/OpenXT/xenclient-oe/commit/d977e12b693117d63048b50597cc748ce5c2a791[xenclient-oe/d977e12b]: xorg: Partially restore former configuration., https://openxt.atlassian.net/browse/OXT-1463[OXT-1463] https://openxt.atlassian.net/browse/OXT-1320[OXT-1320] 
+- https://github.com/OpenXT/xenclient-oe/commit/b7965c57f217234273920a20331963fa7659ecba[xenclient-oe/b7965c57]: qemu-dm: 3.1 uprev, https://openxt.atlassian.net/browse/OXT-1499[OXT-1499] 
+- https://github.com/OpenXT/xenclient-oe/commit/338c7432a6cf7f0ecb5f26a9dde45d76acd46af8[xenclient-oe/338c7432]: qemu-dm: move PV into qemu-dm.inc, https://openxt.atlassian.net/browse/OXT-1499[OXT-1499] 
+- https://github.com/OpenXT/xenclient-oe/commit/bc6783425fe0fa7b93f1034b6e21301e4ffbc99b[xenclient-oe/bc678342]: qemu-dm: Refresh patch queue, https://openxt.atlassian.net/browse/OXT-1499[OXT-1499] 
+- https://github.com/OpenXT/xenclient-oe/commit/729efb4904fea88d2a6e9146adbc1c8a9c09b045[xenclient-oe/729efb49]: tpm2-tss: Let OE handle the autoconf., https://openxt.atlassian.net/browse/OXT-1485[OXT-1485] 
+- https://github.com/OpenXT/xenclient-oe/commit/2fbb5255d92322b510bccb4958037eaf393e17ec[xenclient-oe/2fbb5255]: tpm2-tss: Simplify tpm2-tss packaging., https://openxt.atlassian.net/browse/OXT-1485[OXT-1485] 
+- https://github.com/OpenXT/xenclient-oe/commit/e1cd74a0d5087f01e67c849151f84881feb3edbe[xenclient-oe/e1cd74a0]: tpm2-tools: Let OE handle the autoconf., https://openxt.atlassian.net/browse/OXT-1485[OXT-1485] 
+- https://github.com/OpenXT/xenclient-oe/commit/4a6411b5a82158dee9a35b8e23bcde920e06b4c2[xenclient-oe/4a6411b5]: xen/xl: Refactor tapdev_is_shared callsites., https://openxt.atlassian.net/browse/OXT-1514[OXT-1514] 
+- https://github.com/OpenXT/xenclient-oe/commit/efdab5c9da6f02f133488b755024317b59040b33[xenclient-oe/efdab5c9]: xen/xl: Add pid to syslog() redirections for xl., https://openxt.atlassian.net/browse/OXT-1515[OXT-1515] 
+- https://github.com/OpenXT/xenclient-oe/commit/b9dfa999955561f7b5acfb79bbbbfa9f725a9ac2[xenclient-oe/b9dfa999]: xen/xl: Refactor xenmgr sync for firewall rules., https://openxt.atlassian.net/browse/OXT-1516[OXT-1516] 
+- https://github.com/OpenXT/xenclient-oe/commit/0476ae9d7fa3cf827f1b3bcc95c1bb307bb5fc71[xenclient-oe/0476ae9d]: [OVMF PXE] Add Intel E1000 binaries to OVMF image, https://openxt.atlassian.net/browse/OXT-1439[OXT-1439] 
+- https://github.com/OpenXT/xenclient-oe/commit/b3213ed21ca14a19345085c6126e9b7b058c6161[xenclient-oe/b3213ed2]: shim: switch to upstream + patchqueue
+This is a first step, which switches to the upstream head that was used for the fork.
+There shouldn't be any code difference.
+Next step is to upgrade to v15., https://openxt.atlassian.net/browse/OXT-1413[OXT-1413] 
+- https://github.com/OpenXT/xenclient-oe/commit/90c6f4a5b993f65dcb91ac14e28b24d815b903b2[xenclient-oe/90c6f4a5]: OXT-1374: [xen] Remove Kconfig option pv linear-pagetables, https://openxt.atlassian.net/browse/OXT-1374[OXT-1374] 
+- https://github.com/OpenXT/xenclient-oe/commit/5f6ea20d30901c480ce6f03e8e34b7636a822a63[xenclient-oe/5f6ea20d]: kernel: enable cgroups for dom0, https://openxt.atlassian.net/browse/OXT-1379[OXT-1379] 
+- https://github.com/OpenXT/xenclient-oe/commit/fdaf8be22ac9aa1d03160d139051da6704ff2862[xenclient-oe/fdaf8be2]: [xen] Force synchronous page scrub, https://openxt.atlassian.net/browse/OXT-1494[OXT-1494] 
+- https://github.com/OpenXT/xenclient-oe/commit/41343e0790a0d5c8f0d2d56ce8536dd6c77c8f30[xenclient-oe/41343e07]: [nss] Upgrade nss to 3.45, https://openxt.atlassian.net/browse/OXT-1642[OXT-1642] 
+- https://github.com/OpenXT/xenclient-oe/commit/08f858d39dcc3a7e427700578cba64b7e02e6e43[xenclient-oe/08f858d3]: [pesign] Cast RHS of macro assignment, https://openxt.atlassian.net/browse/OXT-1642[OXT-1642] 
+- https://github.com/OpenXT/xenfb2/commit/6b7c1e0a5222e6afc7e0d3e7c72f7c2d9338f385[xenfb2/6b7c1e0a]: linux: Deprecated XENFB2_TYPE_UPDATE_FB2M., https://openxt.atlassian.net/browse/OXT-1652[OXT-1652] 
+- https://github.com/OpenXT/xenfb2/commit/da7d3409fb8ffa0669a74dcb08e8260702ffc22a[xenfb2/da7d3409]: linux: Deprecated XENFB2_TYPE_FB_CACHING., https://openxt.atlassian.net/browse/OXT-1652[OXT-1652] 
+- https://github.com/OpenXT/xenfb2/commit/eaa590f81ba7e7a124104f8d00329c8f5bfc1e9e[xenfb2/eaa590f8]: linux: Remove FB2M reset., https://openxt.atlassian.net/browse/OXT-1652[OXT-1652] 
+- https://github.com/OpenXT/xsm-policy/commit/054f8701c6ec533e4ef20b7b48d6f14bf7d298b6[xsm-policy/054f8701]: Update base files to Xen 4.10.0, https://openxt.atlassian.net/browse/OXT-1277[OXT-1277] 
+- https://github.com/OpenXT/xsm-policy/commit/39d08c276288d00aac8a2a1d03524aac6f7209f2[xsm-policy/39d08c27]: Update policy for Xen 4.10.0, https://openxt.atlassian.net/browse/OXT-1277[OXT-1277] 
+- https://github.com/OpenXT/xsm-policy/commit/af4665c2b1803b08838ea4abfca58f7c992585db[xsm-policy/af4665c2]: Move HVM self permissions into interface, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xsm-policy/commit/8f18d71c1dac9a1d42ce39a10216ff41fcacb8da[xsm-policy/8f18d71c]: Allow NDVM stubdom use, https://openxt.atlassian.net/browse/OXT-1327[OXT-1327] 
+- https://github.com/OpenXT/xsm-policy/commit/c102040aa6ec2f9c5f25c6aed10d54604f98076a[xsm-policy/c102040a]: [flask] Update for Xen 4.12, https://openxt.atlassian.net/browse/OXT-1563[OXT-1563] https://openxt.atlassian.net/browse/OXT-1550[OXT-1550] 
+
+<<<
+
+:numbered:
+Security Fixes
+--------------
+
+- https://github.com/OpenXT/xenclient-oe/commit/0dec0d989f8a01acd5381d22bd3efddb937e3c4e[xenclient-oe/0dec0d98]: refpolicy-mcs: Allow loading signed modules, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/3a2060c5807e45e5638c9b49ef62957e6240c97f[xenclient-oe/3a2060c5]: modules-signing: Add basic support for signed modules, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/e79d05d5f28ca838d75172acf92e43acd22b2c99[xenclient-oe/e79d05d5]: module-signing: Allow external keys, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/88c360b44144f8de3e1e9c8a72dc20fd9573c863[xenclient-oe/88c360b4]: linux: dom0 module signing, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/929e97212e4d87993e73b7f961f0f0d1467785ab[xenclient-oe/929e9721]: linux: ndvm module signing, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/5eb1f9986eae401ad93583248e5340cc45d400ac[xenclient-oe/5eb1f998]: linux: uivm module signing, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/43ed16a341d276e04290e7d3ef0614ffdf00e8f8[xenclient-oe/43ed16a3]: linux: stubdom module signing, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/2393d816da9650ae63867ec3baf74afe8fc5ed0c[xenclient-oe/2393d816]: linux: syncvm module signing, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/c36e496c63a1b8fe67332630e161f52274077639[xenclient-oe/c36e496c]: module-signing: Fix SIG_HASH check, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/fb3f4c25ead9423b486914ce11fbe69d1ec33fe7[xenclient-oe/fb3f4c25]: module-signing: Find sign-file location at runtime, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/9e8ea326b8695c1c38e9ad397c7e79484f65afe9[xenclient-oe/9e8ea326]: module-signing: Fix SIGN_FILE error detection, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/1b18ae5d14ffddb605ae70051bc6945308f3c346[xenclient-oe/1b18ae5d]: module-signing: Serialize sign_modules with make_scripts, https://openxt.atlassian.net/browse/OXT-1403[OXT-1403] 
+- https://github.com/OpenXT/xenclient-oe/commit/41343e0790a0d5c8f0d2d56ce8536dd6c77c8f30[xenclient-oe/41343e07]: [nss] Upgrade nss to 3.45, https://openxt.atlassian.net/browse/OXT-1642[OXT-1642] 
+- https://github.com/OpenXT/xenclient-oe/commit/08f858d39dcc3a7e427700578cba64b7e02e6e43[xenclient-oe/08f858d3]: [pesign] Cast RHS of macro assignment, https://openxt.atlassian.net/browse/OXT-1642[OXT-1642] 
+- https://github.com/OpenXT/xenclient-oe/commit/642e8e941cbe9aeed7762f72ba49c1e0511f792a[xenclient-oe/642e8e94]: l1tf: Disable SMT on Xen., https://openxt.atlassian.net/browse/OXT-1426[OXT-1426] 
+- https://github.com/OpenXT/xenclient-oe/commit/7e15407cd5a5c9d9ece46bd2b58e746e5a37c69b[xenclient-oe/7e15407c]: passwd: set all non-root shells to false, https://openxt.atlassian.net/browse/OXT-1585[OXT-1585] https://openxt.atlassian.net/browse/OXT-1586[OXT-1586] 
+- https://github.com/OpenXT/openxt/commit/9899a2cb8bf4a669d583bcea0d1cf4e8a413b8ee[openxt/9899a2cb]: xen: Move version management to the recipes., https://openxt.atlassian.net/browse/OXT-1346[OXT-1346] 
+- https://github.com/OpenXT/xenclient-oe/commit/1b88997d7a18699f28b8c7edf8f04e05316ddb5c[xenclient-oe/1b88997d]: xen: Fetch from git stable branch., https://openxt.atlassian.net/browse/OXT-1346[OXT-1346] 
+- https://github.com/OpenXT/xenclient-oe/commit/409a525c1b0c4766507f2677d08437ca338e4b4f[xenclient-oe/409a525c]: xen: upgrade to the tip of stable-4.10., https://openxt.atlassian.net/browse/OXT-1425[OXT-1425] https://openxt.atlassian.net/browse/OXT-1424[OXT-1424] https://openxt.atlassian.net/browse/OXT-1423[OXT-1423] https://openxt.atlassian.net/browse/OXT-1343[OXT-1343] 
+- https://github.com/OpenXT/xenclient-oe/commit/a71afa5fc534b8fe7aadf994f540825f29fc26de[xenclient-oe/a71afa5f]: [bdwgc] Backport upgrade to bdwgc, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/64d5f0457cca8bb5dab1b73e12131a19aeced869[xenclient-oe/64d5f045]: [php] Backport PHP CVE-2017-9120, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/c92c63b97560ae67e48bbd21eed7872887686751[xenclient-oe/c92c63b9]: [krb5] Backport krb5 CVE-2017-11462, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/a2b61a55fa6b7a2f72bba4983c3b379c51535072[xenclient-oe/a2b61a55]: [gnulib] Upgrade to 2017-08-20.18, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/3e303969fb1766b1f10cd69d8ecd32e495ae2d73[xenclient-oe/3e303969]: [libxslt] Backport CVE-2019-11068 fix, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/d7a6e0108994237a6c6ff9b9c65a6470efbd9750[xenclient-oe/d7a6e010]: [python] Backport CVEs for python 2.7, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/e021cd4c366d9146ab2fdb580f9acaf567504fc0[xenclient-oe/e021cd4c]: [glibc] Backport Critical Glibc CVEs, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/6839b9ce1ef483cc7e1be1ac22de4617c48434e2[xenclient-oe/6839b9ce]: [icu] Backport icu CVE, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/2d67c59b3d373131851a1c051400a20e2408c039[xenclient-oe/2d67c59b]: [libsndfile1] Port 1.0.28 from oe-core master, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/376c1081699d95ccd9ea643000ba61f57aa31acc[xenclient-oe/376c1081]: [curl] Upgrade curl to 7.65.1, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/d43e719d75088150806bdae4eb0fb259d6890a4c[xenclient-oe/d43e719d]: [gettext] Backport CVE-2018-18751, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/25c49feb3d34bee6dc9bb87607cea19193a757a3[xenclient-oe/25c49feb]: [libxml2] Backport CVE-2017-8872, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/4109254f79db073da62ce312c4a9c91839599b03[xenclient-oe/4109254f]: [elfutils] Backport CVE-2018-16402, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/fda0d59eb77c68490f6f53ef58a3693486e7089f[xenclient-oe/fda0d59e]: [busybox] Backport CVE-2017-16544, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/394bb8f2478cb40d11e84e36feb3f631cbcc7ccb[xenclient-oe/394bb8f2]: [wget] Upgrade to 1.19.2 for CVEs, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/93063ce8f4cd0fc3d78f11e43b1a89dbe0997b09[xenclient-oe/93063ce8]: [xserver-xorg] Upgrade to 1.19.5 for CVEs, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/1b869c4ebde57f6a9b1c31988d675a67ee5b088e[xenclient-oe/1b869c4e]: [libpcre] Backport CVE-2017-8786, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/403617edca620cfd7642ff226cddee3d9c8e0b40[xenclient-oe/403617ed]: [sqlite3] Upgrade to 3.20.0 for CVE, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/5ee41311c723fce700d3253598576b3e6ef87202[xenclient-oe/5ee41311]: [sqlite3] Upgrade sqlite3 and pseudo, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+
+<<<
+
+:numbered:
+Maintenance Changes
+-------------------
+
+- https://github.com/OpenXT/fbtap/commit/d2080b86f33433dc1025dd992028a8eb12490d09[fbtap/d2080b86]: ioctl: FBTAP_IOCGSIZE type width., https://openxt.atlassian.net/browse/OXT-1638[OXT-1638] 
+- https://github.com/OpenXT/icbinn/commit/6330df811a4e79dd40b7c975dc0afaaf1032cc0a[icbinn/6330df81]: pyicbinn: Link with -Bsymbolic, https://openxt.atlassian.net/browse/OXT-1628[OXT-1628] 
+- https://github.com/OpenXT/idl/commit/973a97d5d538509261f5a8c00253bc6dd92da19a[idl/973a97d5]: ahci support: add property 'hdtype', https://openxt.atlassian.net/browse/OXT-1123[OXT-1123] 
+- https://github.com/OpenXT/input/commit/214da032aead31c832ff0db0555fbe9caad903f7[input/214da032]: [domains] Better filter for dead domains, https://openxt.atlassian.net/browse/OXT-1569[OXT-1569] 
+- https://github.com/OpenXT/installer/commit/4b69b1a1e77cf89360df79789a374ec1d203df49[installer/4b69b1a1]: Clear outdated files from ESP during upgrades, https://openxt.atlassian.net/browse/OXT-1459[OXT-1459] 
+- https://github.com/OpenXT/installer/commit/4af6da9234c11fc97ea13319e552489e83a994c6[installer/4af6da92]: [installer] Only install upgradecompat on upgrades, https://openxt.atlassian.net/browse/OXT-1549[OXT-1549] 
+- https://github.com/OpenXT/installer/commit/f954959e436f6600d42544c7cee39bad997caea7[installer/f954959e]: seal-system: Run write_config_pcrs from chroot, https://openxt.atlassian.net/browse/OXT-1351[OXT-1351] 
+- https://github.com/OpenXT/installer/commit/0356eff43a73a3ebc857a1821eebb1c5b10e21de[installer/0356eff4]: [stable-9] Add boot VGA device warning, https://openxt.atlassian.net/browse/OXT-1600[OXT-1600] 
+- https://github.com/OpenXT/installer/commit/4844382ec8a2cbfb144d2b84a34797bdaa9ee448[installer/4844382e]: [copy_to_esp] Limit search to target disk only, https://openxt.atlassian.net/browse/OXT-1632[OXT-1632] 
+- https://github.com/OpenXT/installer/commit/027f5cb477322161a5497e3fbfba823e0a73dd41[installer/027f5cb4]: installer: Handle NVMe symlink aliases., https://openxt.atlassian.net/browse/OXT-1654[OXT-1654] 
+- https://github.com/OpenXT/installer/commit/fb009ec5200bc6b55c335440c7b91c754f5fb2e0[installer/fb009ec5]: part2: Use common for devnode sanitation., https://openxt.atlassian.net/browse/OXT-1654[OXT-1654] 
+- https://github.com/OpenXT/manager/commit/64b4682f433ca19d0f5e28f1da7d2e1661263603[manager/64b4682f]: xenmgr: remove snapshot disk key on shutdown, https://openxt.atlassian.net/browse/OXT-1243[OXT-1243] 
+- https://github.com/OpenXT/manager/commit/a5c4077a522824aecd26c5c4a0c18aaf566a1eb6[manager/a5c4077a]: xenmgr: Use xl option rtc_timeoffset, https://openxt.atlassian.net/browse/OXT-1442[OXT-1442] 
+- https://github.com/OpenXT/manager/commit/10c09010f16a48e7aabdcea4279d86f86184c1ae[manager/10c09010]: xenmgr: fix nested HVM xl syntax, https://openxt.atlassian.net/browse/OXT-1510[OXT-1510] 
+- https://github.com/OpenXT/manager/commit/8e7eb2e7f66dd93fc1ba2fc5af49e43c50580220[manager/8e7eb2e7]: ahci support: update vm templates with appropriate hdtype, https://openxt.atlassian.net/browse/OXT-1123[OXT-1123] 
+- https://github.com/OpenXT/manager/commit/f38a42c31ce9041b256f51afa8b3ae2c11ff67cb[manager/f38a42c3]: fix disk virtual path, https://openxt.atlassian.net/browse/OXT-1123[OXT-1123] 
+- https://github.com/OpenXT/manager/commit/2eee89b66a7bbc32eb5075a7ff742b266e6a280c[manager/2eee89b6]: ahci support: add xenmgr support to parse 'hdtype' config option, https://openxt.atlassian.net/browse/OXT-1123[OXT-1123] 
+- https://github.com/OpenXT/manager/commit/aa359dabdaf89b40ba2f875663f40b4943b7755f[manager/aa359dab]: [xenmgr] Add initrd to xl config, https://openxt.atlassian.net/browse/OXT-1287[OXT-1287] 
+- https://github.com/OpenXT/manager/commit/aab6bb276902b80e2652bd95a241c4afceb91d7c[manager/aab6bb27]: fix iso-hotswap, https://openxt.atlassian.net/browse/OXT-1556[OXT-1556] 
+- https://github.com/OpenXT/manager/commit/81877da7a0458216c83198d571777da7edefab1a[manager/81877da7]: xenmgr: Use loopdev for mounting partitions, https://openxt.atlassian.net/browse/OXT-1538[OXT-1538] 
+- https://github.com/OpenXT/manager/commit/73bb02f37e62a5aef61905bf4a56ca0ce73b5154[manager/73bb02f3]: [xenmgr] Error if VMs disk paths are bad, https://openxt.atlassian.net/browse/OXT-1596[OXT-1596] 
+- https://github.com/OpenXT/manager/commit/a9faaae4537a7452a6fd0358f9eae0379b65c318[manager/a9faaae4]: [linux] Use ide instead of AHCI, https://openxt.atlassian.net/browse/OXT-1582[OXT-1582] 
+- https://github.com/OpenXT/network/commit/333ae37e1bac612cbaa3868474f18bc906ae94fe[network/333ae37e]: network-slave: Forward 802.1x packets on brbridged, https://openxt.atlassian.net/browse/OXT-1437[OXT-1437] 
+- https://github.com/OpenXT/openxt/commit/b4dc32d8da0442cdb06f437c9d8a81f1bad38b19[openxt/b4dc32d8]: Stop using grubx64.efi symlink, https://openxt.atlassian.net/browse/OXT-1484[OXT-1484] 
+- https://github.com/OpenXT/openxt/commit/4c34e0ce930bc91fe2119aa40e98c3ef2a18fce0[openxt/4c34e0ce]: debian_install.sh: fix install on non-systemd (wheezy)
+Also fix v4v uninstall., https://openxt.atlassian.net/browse/OXT-1348[OXT-1348] 
+- https://github.com/OpenXT/openxt/commit/a40f33f8a8f8d60ad9fb2adedb38777a1e7a3c72[openxt/a40f33f8]: build-scripts: remove architecture info from output files, https://openxt.atlassian.net/browse/OXT-1554[OXT-1554] https://openxt.atlassian.net/browse/OXT-1552[OXT-1552] 
+- https://github.com/OpenXT/openxt/commit/ceb5907d5e74b9a8046048eae990fa61014fd383[openxt/ceb5907d]: version: Allow upgrades from 8.0.0., https://openxt.atlassian.net/browse/OXT-1611[OXT-1611] 
+- https://github.com/OpenXT/pv-linux-drivers/commit/ec8d00c972779bd75a8985e6bcc529d4750d71cc[pv-linux-drivers/ec8d00c9]: v4v: Remove sources from this repository., https://openxt.atlassian.net/browse/OXT-251[OXT-251] 
+- https://github.com/OpenXT/surfman/commit/e74cb66fd701bdf2039acc061ade10e95cf81ee6[surfman/e74cb66f]: xenfb2: Amend default framebuffer values., https://openxt.atlassian.net/browse/OXT-1639[OXT-1639] 
+- https://github.com/OpenXT/surfman/commit/8f36aa7854092deec89e251b011b643c1e60b086[surfman/8f36aa78]: surfman/drm: Let surfman trigger monitor rescan., https://openxt.atlassian.net/browse/OXT-1653[OXT-1653] 
+- https://github.com/OpenXT/surfman/commit/1189b086b460dfee2869e936cd1a6e6ca33bff0a[surfman/1189b086]: surfman/drm: Calloc(3) may fail., https://openxt.atlassian.net/browse/OXT-1653[OXT-1653] 
+- https://github.com/OpenXT/surfman/commit/3a6c89c7cbb45a56d932e3313003f8f2edf8e45b[surfman/3a6c89c7]: surfman/drm: SEGV connector->modes & upscale limit, https://openxt.atlassian.net/browse/OXT-1653[OXT-1653] 
+- https://github.com/OpenXT/surfman/commit/4ea6510df2304da20325dae800f74c4ea949f3d8[surfman/4ea6510d]: surfman: get_monitor_info() may fail., https://openxt.atlassian.net/browse/OXT-1653[OXT-1653] 
+- https://github.com/OpenXT/toolstack-data/commit/d485da95758d07f36ff69e36b136fcef213039a3[toolstack-data/d485da95]: [ui] Disable sleep options, https://openxt.atlassian.net/browse/OXT-1589[OXT-1589] 
+- https://github.com/OpenXT/toolstack-data/commit/0092bda9b6842038deedca5e1d055afc7a57c41f[toolstack-data/0092bda9]: [ui] Disable unused fields in VM Details, https://openxt.atlassian.net/browse/OXT-1598[OXT-1598] 
+- https://github.com/OpenXT/toolstack-data/commit/b48817bf237cd2def6281995eec3249be61cf1d0[toolstack-data/b48817bf]: [ui] Disable VM and Host Hibernate, https://openxt.atlassian.net/browse/OXT-1591[OXT-1591] 
+- https://github.com/OpenXT/xenclient-oe/commit/04f6d12802164f18a01c3bbd25b0b3b80f70446c[xenclient-oe/04f6d128]: [xl] Use sigsuspend to synch xenmgr and xl domain, https://openxt.atlassian.net/browse/OXT-1299[OXT-1299] 
+- https://github.com/OpenXT/xenclient-oe/commit/64c3b2817ef58e83fa81e0f49f9c6ed5bb410a88[xenclient-oe/64c3b281]: qemu-dm: Remove version from patch directory, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/ddbdf0c93df918fbe0901f407157107f44ef5db0[xenclient-oe/ddbdf0c9]: qemu-dm: Use a/b patch format, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/df30c41d8b24b964b5b829ef4a91afbc26c3af60[xenclient-oe/df30c41d]: qemu-dm: Sort patch hunks, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/16f012b6e70df2bf934b6ccabd39bfe3b1525aca[xenclient-oe/16f012b6]: qemu-dm: Remove unneeded CVE/XSA patches, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/ede7177fa2de559c0f359f14e88ca87b2c6d58bf[xenclient-oe/ede7177f]: qemu-dm: Uprev to 2.12.0, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/896a861d8311d022ac3687f7df9e0b8cb8257503[xenclient-oe/896a861d]: qemu-dm: 2.12 update compile-time-stubdom-flag.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/fb42a19d8a6ac0ad4d520da2c08ff29ee1d7d22d[xenclient-oe/fb42a19d]: qemu-dm: 2.12 generic-xenstore-extensions.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/e47ac8f298f0645b811bc9b8479162e8980a6b06[xenclient-oe/e47ac8f2]: qemu-dm: 2.12 readonly-ide.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/99da42b9ee56fe93517cdc4a4744712ead45b6e7[xenclient-oe/99da42b9]: qemu-dm: 2.12 hvm-param-dm-domain.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/d9019a8ffc40244c833165e724209865f3a4cf4e[xenclient-oe/d9019a8f]: qemu-dm: 2.12 logging-syslog.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/f9dc42d8846cdc322aff0bc00fc78a556db8942f[xenclient-oe/f9dc42d8]: qemu-dm: 2.12 dmbus.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/87d783f620c54fbf1c5b69e2a463449dce88f8ea[xenclient-oe/87d783f6]: qemu-dm: 2.12 switcher.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/f1e99b95ef9e005b0c755736a96810c471907976[xenclient-oe/f1e99b95]: qemu-dm: 2.12 acpi.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/715db07953f3d06789e96eece2306892e791b2b9[xenclient-oe/715db079]: qemu-dm: 2.12 xenmou.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/fb5686ed29c07febbe69d6637ac26e9ffbf1f17a[xenclient-oe/fb5686ed]: qemu-dm: 2.12 atapi-pass-through.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/d5eb21a0162ab149bfbab84dba9f01822246cbcf[xenclient-oe/d5eb21a0]: qemu-dm: 2.12 vbe-xt-extensions.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/9f8ae1b10c6cdca195ee9ed7e0b2947255d8dda3[xenclient-oe/9f8ae1b1]: qemu-dm: 2.12 vga-\{spinlock,shadow-bda}, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/d1f80328956190834b2b294b5463929690a5aafc[xenclient-oe/d1f80328]: qemu-dm: 2.12 surfman-dcl.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/b65e76a9b73024d8148bd03b67d3d8a4ffd82264[xenclient-oe/b65e76a9]: qemu-dm: 2.12 audio-policy.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/0b0daca382784f725c53e20964e781732d91bc12[xenclient-oe/0b0daca3]: qemu-dm: 2.12 msix-cap-disable.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/0ce2782cfc6a0359393056b9cf5e0d3fad4b53e3[xenclient-oe/0ce2782c]: qemu-dm: 2.12 openxtaudio.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/a3b233ff46aaf5cb6403738d55147d3e33c80bc1[xenclient-oe/a3b233ff]: qemu-dm: 2.12 nic-link-state-propagation.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/80329035511d215d078ff5b6097a7a454af59a39[xenclient-oe/80329035]: qemu-dm: 2.12 acpi-pm-feature.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/73c61091f1e7a861123de9d45a4b7471fd8b0c0e[xenclient-oe/73c61091]: qemu-dm: 2.12 maintain-time-offset.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/953488a28d38dd1c1ad330c3a2efab39bfbae65c[xenclient-oe/953488a2]: qemu-dm: 2.12 acpi-wakeup.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/e41f464633c9526d4ab650ea5611ef215ecb8780[xenclient-oe/e41f4646]: qemu-dm: 2.12 openxt-misc-fixes.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/e5cbac565da08ac3e7f2a21edc0bdc3ede6b7010[xenclient-oe/e5cbac56]: qemu-dm: 2.12 qmp-v4v-char-driver.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/3e2eca64656a2fd62807220f2eb6dd2fe28e898e[xenclient-oe/3e2eca64]: qemu-dm: 2.12 use-relative-xenstore-nodes.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/2c842afb4eb7a5a8f1a4b5eca50f9be03e71becf[xenclient-oe/2c842afb]: qemu-dm: 2.12 exit-mainloop-on-reset.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/efe7e7be220de25f9568fbd2cdb4efc7dbdcb66d[xenclient-oe/efe7e7be]: qemu-dm: 2.12 write-acpi-state-to-xenstore.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/f43f14fea4dbdc0d5dd85a27494df29509ddfa55[xenclient-oe/f43f14fe]: qemu-dm: 2.12 set-blockdev-ro.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/c398b8ae3c4451e0b27dba8548d1b250dc8448e5[xenclient-oe/c398b8ae]: qemu-dm: 2.12 block-remove-unused-block-format-support.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/dad06070234fe38edf146e14355cd20f3aeb3901[xenclient-oe/dad06070]: qemu-dm: 2.12 net-Remove-unused-network-options.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/79a083678ec1f8f4010f81b5f7f759a744848198[xenclient-oe/79a08367]: qemu-dm: Support disabling virtio, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/7bd9853e123513311921cc535a4d950d2700c86d[xenclient-oe/7bd9853e]: qemu-dm: Disable TCG, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/f6f7b5fe673d778f7c3b41fe72012a3f47db9ba4[xenclient-oe/f6f7b5fe]: qemu-dm: Make chardev-v4v more configurable, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/b5fbdcdaab74eb9b9a422d9dacdc1b781b421100[xenclient-oe/b5fbdcda]: qemu-dm: Convert and fix switcher keyboard input, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/5f38f9bf627401b32ec0ccba0c223c47bf262e31[xenclient-oe/5f38f9bf]: qemu-dm: Update readonly-ide.patch, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/e83ba6944faf5e929e8cc608829225a52716a048[xenclient-oe/e83ba694]: qemu-dm: Move xen-dmbus to hw/xen/, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/c69db3e734bbc56af2afdfc30d18f92e7dd601d1[xenclient-oe/c69db3e7]: qemu-dm: Drop QEMU_WARN_UNUSED_RESULT hunk, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/2ed4eeae384615f16e4d97c2fbb287fdfd054d4c[xenclient-oe/2ed4eeae]: qemu-dm: Avoid segfault in dmbus_send, https://openxt.atlassian.net/browse/OXT-1360[OXT-1360] 
+- https://github.com/OpenXT/xenclient-oe/commit/c6946d7dbc5afb358020b1ff9eeb9bbcd54f9f10[xenclient-oe/c6946d7d]: dmidecode: Inherit CC and CFLAGS from OE, https://openxt.atlassian.net/browse/OXT-1307[OXT-1307] 
+- https://github.com/OpenXT/xenclient-oe/commit/d119f60849cfed4311edce31a37db43c40a12862[xenclient-oe/d119f608]: linux: 32bit Xen EFI support, https://openxt.atlassian.net/browse/OXT-1307[OXT-1307] 
+- https://github.com/OpenXT/xenclient-oe/commit/2a1f3ce2fb9c2ca01891a44b81cf2797b18621de[xenclient-oe/2a1f3ce2]: libselinux: Compile with _FILE_OFFSET_BITS=64, https://openxt.atlassian.net/browse/OXT-1388[OXT-1388] 
+- https://github.com/OpenXT/xenclient-oe/commit/049521c15e620061341a1f1d99030a5d06408373[xenclient-oe/049521c1]: xen: Amend xen.efi LoadOptions handling., https://openxt.atlassian.net/browse/OXT-1432[OXT-1432] 
+- https://github.com/OpenXT/xenclient-oe/commit/52b073b140be7f63463d29bdfe8113ebd812fcb3[xenclient-oe/52b073b1]: xenclient-idl: Add recipe version, https://openxt.atlassian.net/browse/OXT-1436[OXT-1436] 
+- https://github.com/OpenXT/xenclient-oe/commit/2aa5cbe21294fb96ffce17798fc5e75178bfd67b[xenclient-oe/2aa5cbe2]: qemu-dm: Forward bridge traffic with group_fwd_mask instead of break_8021d, https://openxt.atlassian.net/browse/OXT-1437[OXT-1437] 
+- https://github.com/OpenXT/xenclient-oe/commit/5067605b2e5595499484d8aba47a2a08d7c90279[xenclient-oe/5067605b]: linux: Remove break-8021d.patch, https://openxt.atlassian.net/browse/OXT-1437[OXT-1437] 
+- https://github.com/OpenXT/xenclient-oe/commit/9c45fd5c9dc461a63ac3dfcf20a3c55c0ac1c4aa[xenclient-oe/9c45fd5c]: qemu-dm: 3.0.0 uprev, https://openxt.atlassian.net/browse/OXT-1445[OXT-1445] 
+- https://github.com/OpenXT/xenclient-oe/commit/9d4c4117b52ffa2ab7de45fe3b287110fc40d8ec[xenclient-oe/9d4c4117]: qemu-dm: update hvm-param-dm-domain, https://openxt.atlassian.net/browse/OXT-1445[OXT-1445] 
+- https://github.com/OpenXT/xenclient-oe/commit/0a4270b3c207f5fb1acf618d250f5efb6722c8ad[xenclient-oe/0a4270b3]: qemu-dm: update vbe-xt-extenstions, https://openxt.atlassian.net/browse/OXT-1445[OXT-1445] 
+- https://github.com/OpenXT/xenclient-oe/commit/04375f3f25511088aa187739d320e701e2f1d056[xenclient-oe/04375f3f]: qemu-dm: update vga-spinlock, https://openxt.atlassian.net/browse/OXT-1445[OXT-1445] 
+- https://github.com/OpenXT/xenclient-oe/commit/5527d0f26369cfc0c8c182655e9136b5afe34d50[xenclient-oe/5527d0f2]: qemu-dm: update surfman-dcl, https://openxt.atlassian.net/browse/OXT-1445[OXT-1445] 
+- https://github.com/OpenXT/xenclient-oe/commit/81ebc511e6b1b14e4661f51e12cda623be797832[xenclient-oe/81ebc511]: qemu-dm: update audio-policy, https://openxt.atlassian.net/browse/OXT-1445[OXT-1445] 
+- https://github.com/OpenXT/xenclient-oe/commit/4a3b918309114cfa731afe450aa06471d590612b[xenclient-oe/4a3b9183]: qemu-dm: update block-remove-unused-block-format-support, https://openxt.atlassian.net/browse/OXT-1445[OXT-1445] 
+- https://github.com/OpenXT/xenclient-oe/commit/c53f528427ef1dee87748de8c0d65e4ea78be818[xenclient-oe/c53f5284]: qemu-dm: Refresh patch queue, https://openxt.atlassian.net/browse/OXT-1445[OXT-1445] 
+- https://github.com/OpenXT/xenclient-oe/commit/c55a4b1c67016cc3c257f0a6595c19fec2439881[xenclient-oe/c55a4b1c]: libxl: Use host_device for stubdom cdrom format, https://openxt.atlassian.net/browse/OXT-1445[OXT-1445] 
+- https://github.com/OpenXT/xenclient-oe/commit/8a111a5fb8c630d3ebc13198396dfa8340e8c864[xenclient-oe/8a111a5f]: qemu-dm: Fix domain focus on reboot for 3.0, https://openxt.atlassian.net/browse/OXT-1445[OXT-1445] 
+- https://github.com/OpenXT/xenclient-oe/commit/997935c1159966b4686bf395fd875d460378f2e5[xenclient-oe/997935c1]: oxt-ml: Add seal-system.conf., https://openxt.atlassian.net/browse/OXT-1438[OXT-1438] 
+- https://github.com/OpenXT/xenclient-oe/commit/642e8e941cbe9aeed7762f72ba49c1e0511f792a[xenclient-oe/642e8e94]: l1tf: Disable SMT on Xen., https://openxt.atlassian.net/browse/OXT-1426[OXT-1426] 
+- https://github.com/OpenXT/xenclient-oe/commit/a57719d5b178b7523f1ce902432eef78e0af6b36[xenclient-oe/a57719d5]: uefi/tboot: Load microcode from MBI2 modules., https://openxt.atlassian.net/browse/OXT-1452[OXT-1452] 
+- https://github.com/OpenXT/xenclient-oe/commit/b06338353d9e19a38968f6147bb21cb4c1fb84fe[xenclient-oe/b0633835]: grub-efi: Don't create grubx64.efi symlink, https://openxt.atlassian.net/browse/OXT-1484[OXT-1484] 
+- https://github.com/OpenXT/xenclient-oe/commit/8cbd42e75a50aea046b3db14305732398d2fdcd5[xenclient-oe/8cbd42e7]: fix iso hotswap for linux guests, https://openxt.atlassian.net/browse/OXT-1493[OXT-1493] 
+- https://github.com/OpenXT/xenclient-oe/commit/fc0f085da3ec170dbd4179b60552282f19c53b96[xenclient-oe/fc0f085d]: rpc-proxy: initscript: start rpc-proxy even when SELinux is disabled.
+2 of the 3 rpc-proxy instances are started with runcon, since we want
+each process to be in its own SELinux context.
+However, runcon fails when SELinux is disabled, and rpc-proxy is not
+started in that case.
+Fixing this by not running runcon when SELinux is disabled., https://openxt.atlassian.net/browse/OXT-1504[OXT-1504] 
+- https://github.com/OpenXT/xenclient-oe/commit/c5ffc42f5c6c1ddfe474ad3d3fec491b5f7ca543[xenclient-oe/c5ffc42f]: tboot: Upgrade to 1.9.9, https://openxt.atlassian.net/browse/OXT-1446[OXT-1446] https://openxt.atlassian.net/browse/OXT-1481[OXT-1481] 
+- https://github.com/OpenXT/xenclient-oe/commit/9a4d95069bd4ec9734a39c6c00b7cd3caaf241a2[xenclient-oe/9a4d9506]: xen/xl: Fix memory fault in libxl create domain., https://openxt.atlassian.net/browse/OXT-1517[OXT-1517] 
+- https://github.com/OpenXT/xenclient-oe/commit/47a84975c5cfa5957c25d023f72f199c8c2817fc[xenclient-oe/47a84975]: ahci support: provide multiple disk support in case of stubdom, https://openxt.atlassian.net/browse/OXT-1123[OXT-1123] 
+- https://github.com/OpenXT/xenclient-oe/commit/35bf400a634440f6ab4f6316183c15e48a6663d6[xenclient-oe/35bf400a]: OXT-1523: Fix auto-generated key signing race, https://openxt.atlassian.net/browse/OXT-1523[OXT-1523] 
+- https://github.com/OpenXT/xenclient-oe/commit/db72850b3c82df0b057655b84cc0e483d367bf40[xenclient-oe/db72850b]: txt_info: TXT resources to user-land., https://openxt.atlassian.net/browse/OXT-1506[OXT-1506] 
+- https://github.com/OpenXT/xenclient-oe/commit/4d8b7a8e24054da45fa88a7b643f7ed8b704e356[xenclient-oe/4d8b7a8e]: tboot: Add 0x40f event emulation to pcr-calc., https://openxt.atlassian.net/browse/OXT-1506[OXT-1506] 
+- https://github.com/OpenXT/xenclient-oe/commit/70d834596cbab08eacaaf002c6a3494dc4196ed5[xenclient-oe/70d83459]: tboot: Add utility to match ACM with platform., https://openxt.atlassian.net/browse/OXT-1506[OXT-1506] 
+- https://github.com/OpenXT/xenclient-oe/commit/06f84b8faf5ee2b9cd0a06be22ab26bab576db33[xenclient-oe/06f84b8f]: seal-system: Use event emulation to foward-seal., https://openxt.atlassian.net/browse/OXT-1506[OXT-1506] 
+- https://github.com/OpenXT/xenclient-oe/commit/88c78c8d7fa38ece25dfa25d7e761f801ce70de4[xenclient-oe/88c78c8d]: pesign: Set SRCREV to last known-good build., https://openxt.atlassian.net/browse/OXT-1532[OXT-1532] 
+- https://github.com/OpenXT/xenclient-oe/commit/268deb0d618d6e3b8b410a14e8b72434f2458b26[xenclient-oe/268deb0d]: linux: 4.19.32 micro-upgrade and defconfig cleanup, https://openxt.atlassian.net/browse/OXT-1536[OXT-1536] https://openxt.atlassian.net/browse/OXT-1531[OXT-1531] 
+- https://github.com/OpenXT/xenclient-oe/commit/51fa18c5be94dec2924051a0f630fc14c56108cf[xenclient-oe/51fa18c5]: [xen] Make sure xen Kconfig uses the new TXT_OP, https://openxt.atlassian.net/browse/OXT-1541[OXT-1541] 
+- https://github.com/OpenXT/xenclient-oe/commit/a8a86932b5e5c4112d199be801278fd280d79469[xenclient-oe/a8a86932]: ml/pcr-calc: Forward sealing from previous version, https://openxt.atlassian.net/browse/OXT-1507[OXT-1507] https://openxt.atlassian.net/browse/OXT-1506[OXT-1506] https://openxt.atlassian.net/browse/OXT-1540[OXT-1540] 
+- https://github.com/OpenXT/xenclient-oe/commit/8077a4f2e9fae3dff15687bd649b115ec73af1f0[xenclient-oe/8077a4f2]: ml/pcr-calc: Old eventlog entry handling., https://openxt.atlassian.net/browse/OXT-1540[OXT-1540] 
+- https://github.com/OpenXT/xenclient-oe/commit/de354ace16ef9172898ab2a357abb1026265c7ad[xenclient-oe/de354ace]: [key-functions] Maintain backwards compat, https://openxt.atlassian.net/browse/OXT-1547[OXT-1547] 
+- https://github.com/OpenXT/xenclient-oe/commit/f2a626a1f75c2f1637807ca50486f672f379d64a[xenclient-oe/f2a626a1]: [seal-system] Use dd and iflag=direct, https://openxt.atlassian.net/browse/OXT-1583[OXT-1583] 
+- https://github.com/OpenXT/xenclient-oe/commit/214eeca02048a2ee386de33eb120544031abb73f[xenclient-oe/214eeca0]: refpolicy: Silence mount AVC, https://openxt.atlassian.net/browse/OXT-1538[OXT-1538] 
+- https://github.com/OpenXT/xenclient-oe/commit/e4c63f904d1961142ab7e577be39712694c62d22[xenclient-oe/e4c63f90]: refpolicy: Refresh patch queue for mount.te change, https://openxt.atlassian.net/browse/OXT-1538[OXT-1538] 
+- https://github.com/OpenXT/xenclient-oe/commit/883e1e8cac4e7b274bc10307d861f0c77c51dc0f[xenclient-oe/883e1e8c]: [upgrade-compat] Include coreutils in the upgrade, https://openxt.atlassian.net/browse/OXT-1583[OXT-1583] 
+- https://github.com/OpenXT/xenclient-oe/commit/bd250cdacd9524b0848f77d1ea967eeb7e9b35a1[xenclient-oe/bd250cda]: [init] Load i915 driver to accommodate multiple, https://openxt.atlassian.net/browse/OXT-1593[OXT-1593] 
+- https://github.com/OpenXT/xenclient-oe/commit/96d285340123fdce94492aecbe4734c5f0e14022[xenclient-oe/96d28534]: [xen] Drop hide-cores-from-cpuid.patch, https://openxt.atlassian.net/browse/OXT-1574[OXT-1574] 
+- https://github.com/OpenXT/xenclient-oe/commit/c8187d74f3c93b3e6a55e3a7f77764c8f6226201[xenclient-oe/c8187d74]: [libxl] Retry on pci add failure for PT GPU, https://openxt.atlassian.net/browse/OXT-1571[OXT-1571] 
+- https://github.com/OpenXT/xenclient-oe/commit/72786f2c74435b2e55ae59be6297901790442f6e[xenclient-oe/72786f2c]: keymgmt: Getenforce is not in the installer., https://openxt.atlassian.net/browse/OXT-1581[OXT-1581] 
+- https://github.com/OpenXT/xenclient-oe/commit/806ae0a5aac0dfc1dae178b534126cfcf63c3073[xenclient-oe/806ae0a5]: [stable-9] Enable Radeon and Nouveau kernel modules in installer image, https://openxt.atlassian.net/browse/OXT-1600[OXT-1600] 
+- https://github.com/OpenXT/xenclient-oe/commit/e8799c61b4dbf92bfecb2426417b9712b1131dca[xenclient-oe/e8799c61]: tpm2: Store pcr configuration in $\{tss}.pcrs, https://openxt.atlassian.net/browse/OXT-1594[OXT-1594] 
+- https://github.com/OpenXT/xenclient-oe/commit/a25fff7d3707d4fee313d5571c2d568f4a08f9ab[xenclient-oe/a25fff7d]: seal-system: Only import ml-functions, https://openxt.atlassian.net/browse/OXT-1594[OXT-1594] 
+- https://github.com/OpenXT/xenclient-oe/commit/4fa0cb7d28c04693e9efcf71a141f21c7a6e806d[xenclient-oe/4fa0cb7d]: seal-system: Read pcr selection from /config/config.pcrs, https://openxt.atlassian.net/browse/OXT-1594[OXT-1594] 
+- https://github.com/OpenXT/xenclient-oe/commit/d9fd0f24091ed2e5cef11fd2f28e6630793ce9f0[xenclient-oe/d9fd0f24]: seal-system: Only measure root dev if sealing pcr15, https://openxt.atlassian.net/browse/OXT-1594[OXT-1594] 
+- https://github.com/OpenXT/xenclient-oe/commit/c8d6abe63168f37a9e27a43311aeacd36f257153[xenclient-oe/c8d6abe6]: keymanagement: Add tpm-scripts RDEPENDS, https://openxt.atlassian.net/browse/OXT-1594[OXT-1594] 
+- https://github.com/OpenXT/xenclient-oe/commit/dbf4c959b4d700f463b3c9e31d6c0d8c5544e409[xenclient-oe/dbf4c959]: tpm-scripts: Add tpm\{,2}-tools RDEPENDS, https://openxt.atlassian.net/browse/OXT-1594[OXT-1594] 
+- https://github.com/OpenXT/xenclient-oe/commit/7e15407cd5a5c9d9ece46bd2b58e746e5a37c69b[xenclient-oe/7e15407c]: passwd: set all non-root shells to false, https://openxt.atlassian.net/browse/OXT-1585[OXT-1585] https://openxt.atlassian.net/browse/OXT-1586[OXT-1586] 
+- https://github.com/OpenXT/xenclient-oe/commit/37c4d02576a341adbbdcaae69dfbcbc215a588d8[xenclient-oe/37c4d025]: base-files: /var/lock -> /run/lock, https://openxt.atlassian.net/browse/OXT-1565[OXT-1565] 
+- https://github.com/OpenXT/xenclient-oe/commit/51098b7ed84d07a766776d4f596742e56b6c3974[xenclient-oe/51098b7e]: [xen] Fix argo requeue bugs in upstream Xen, https://openxt.atlassian.net/browse/OXT-1617[OXT-1617] https://openxt.atlassian.net/browse/OXT-1618[OXT-1618] 
+- https://github.com/OpenXT/xenclient-oe/commit/eb54ed320a04098922ba150ad7571414d8251b6f[xenclient-oe/eb54ed32]: [hvmloader] Pass ipxe ROM to hvmloader, https://openxt.atlassian.net/browse/OXT-1627[OXT-1627] 
+- https://github.com/OpenXT/xenclient-oe/commit/63c2900a0b0945a6fd626b88fb7a2f82908ce658[xenclient-oe/63c2900a]: S9: OXT-1623: libxl: add back stubdom check for helper kill, https://openxt.atlassian.net/browse/OXT-1623[OXT-1623] 
+- https://github.com/OpenXT/xenclient-oe/commit/55e1312d27829a69705cfdd33c5afbe5192481a0[xenclient-oe/55e1312d]: S9: OXT-1623: libxl: log error when kill() fails, https://openxt.atlassian.net/browse/OXT-1623[OXT-1623] 
+- https://github.com/OpenXT/xenclient-oe/commit/4a5abaf05f942fd386fc8d010cea9321e812b6f6[xenclient-oe/4a5abaf0]: xinitrc: Create & export XDG_RUNTIME_DIR, https://openxt.atlassian.net/browse/OXT-1562[OXT-1562] 
+- https://github.com/OpenXT/xenclient-oe/commit/2f98ff845b57f9b06fa8552648c054aecc7bc195[xenclient-oe/2f98ff84]: Uprev libtirpc to 1.1.4, https://openxt.atlassian.net/browse/OXT-1628[OXT-1628] 
+- https://github.com/OpenXT/xenclient-oe/commit/bd265a919f8449e315ee3a1c9799ec8179d3535d[xenclient-oe/bd265a91]: OXT-1645: console-setup: uprev to 1.192; fixes build, https://openxt.atlassian.net/browse/OXT-1645[OXT-1645] 
+- https://github.com/OpenXT/xenclient-oe/commit/b37d1592c70918637966bd16e3d89d3b7e8ce6e5[xenclient-oe/b37d1592]: S9: OXT-1577: udev: fix cdrom eject by disabling locking of cdrom devices, https://openxt.atlassian.net/browse/OXT-1577[OXT-1577] 
+- https://github.com/OpenXT/xsm-policy/commit/2bf34e6c42f53eefcd1b875650c2781c98016513[xsm-policy/2bf34e6c]: [xsm] Add access to resource_map for HVM guests, https://openxt.atlassian.net/browse/OXT-1529[OXT-1529] 
+- https://github.com/OpenXT/xsm-policy/commit/abf2d4d40dee85f29fd5180095ea16fb8d155852[xsm-policy/abf2d4d4]: Give dom0 access to mca_op, https://openxt.atlassian.net/browse/OXT-1588[OXT-1588] 
+- https://github.com/OpenXT/xsm-policy/commit/c102040aa6ec2f9c5f25c6aed10d54604f98076a[xsm-policy/c102040a]: [flask] Update for Xen 4.12, https://openxt.atlassian.net/browse/OXT-1563[OXT-1563] https://openxt.atlassian.net/browse/OXT-1550[OXT-1550] 
+- https://github.com/OpenXT/installer/commit/39bcd2313134dcbf82456264a228eb09cd7d9ca9[installer/39bcd231]: [upgrade] Use the upgrade-compat image, https://openxt.atlassian.net/browse/OXT-1539[OXT-1539] 
+- https://github.com/OpenXT/manager/commit/dad8f5756e4048151b6f2218c70f6efe55899038[manager/dad8f575]: templates: Make UIVM default to PVH., https://openxt.atlassian.net/browse/OXT-1647[OXT-1647] 
+- https://github.com/OpenXT/openxt/commit/9899a2cb8bf4a669d583bcea0d1cf4e8a413b8ee[openxt/9899a2cb]: xen: Move version management to the recipes., https://openxt.atlassian.net/browse/OXT-1346[OXT-1346] 
+- https://github.com/OpenXT/openxt/commit/45c7996c002296ea3a77f853a0375228543807e3[openxt/45c7996c]: build-scripts: build new 32-bit upgrade compat image, https://openxt.atlassian.net/browse/OXT-1539[OXT-1539] 
+- https://github.com/OpenXT/openxt/commit/cb63b910628fb8f4ddd91705269dcefab9950bb0[openxt/cb63b910]: [upgrade] Add extra image step for update compat, https://openxt.atlassian.net/browse/OXT-1539[OXT-1539] 
+- https://github.com/OpenXT/surfman/commit/9ca42c1281a568c1d3f0429e4b0cbf5c36e8deb9[surfman/9ca42c12]: libsurfman: Use libxc compat foreign interfaces., https://openxt.atlassian.net/browse/OXT-1650[OXT-1650] 
+- https://github.com/OpenXT/surfman/commit/2c59af553c3e4acf56115fd5666189de7b44e8eb[surfman/2c59af55]: libsurfman: Translate gpfn->mfn for !PV guests., https://openxt.atlassian.net/browse/OXT-1650[OXT-1650] 
+- https://github.com/OpenXT/surfman/commit/035ff0f792b4efdca6496f2ef1a0a2a227594a9c[surfman/035ff0f7]: libsurfman: Handle PVH cacheattr pinning., https://openxt.atlassian.net/browse/OXT-1650[OXT-1650] 
+- https://github.com/OpenXT/xenclient-oe/commit/1b88997d7a18699f28b8c7edf8f04e05316ddb5c[xenclient-oe/1b88997d]: xen: Fetch from git stable branch., https://openxt.atlassian.net/browse/OXT-1346[OXT-1346] 
+- https://github.com/OpenXT/xenclient-oe/commit/b12067ac7a044d7bdb62227b971e45c552dea1ca[xenclient-oe/b12067ac]: dmidecode: bbappend upstream recipe., https://openxt.atlassian.net/browse/OXT-1408[OXT-1408] 
+- https://github.com/OpenXT/xenclient-oe/commit/feb98758b782097afe9a9d8cd59a61af78d21671[xenclient-oe/feb98758]: linux: micro upgrade to 4.14.63, https://openxt.atlassian.net/browse/OXT-1415[OXT-1415] 
+- https://github.com/OpenXT/xenclient-oe/commit/409a525c1b0c4766507f2677d08437ca338e4b4f[xenclient-oe/409a525c]: xen: upgrade to the tip of stable-4.10., https://openxt.atlassian.net/browse/OXT-1425[OXT-1425] https://openxt.atlassian.net/browse/OXT-1424[OXT-1424] https://openxt.atlassian.net/browse/OXT-1423[OXT-1423] https://openxt.atlassian.net/browse/OXT-1343[OXT-1343] 
+- https://github.com/OpenXT/xenclient-oe/commit/ac6eeb29f15c98d4fcf78a1f93051c11aec8643e[xenclient-oe/ac6eeb29]: recipes-graphics: Remove xorg ducplicate recipes., https://openxt.atlassian.net/browse/OXT-1463[OXT-1463] 
+- https://github.com/OpenXT/xenclient-oe/commit/efc108bf60663906f9fb78107dfd64c885365628[xenclient-oe/efc108bf]: uivm: Cleanup uivm image/machine conf., https://openxt.atlassian.net/browse/OXT-1463[OXT-1463] 
+- https://github.com/OpenXT/xenclient-oe/commit/ead04c57d37f704174b4db7590b58a31a7339f3f[xenclient-oe/ead04c57]: fbdev: Add back randr1.2 patch for fb resizing., https://openxt.atlassian.net/browse/OXT-1463[OXT-1463] 
+- https://github.com/OpenXT/xenclient-oe/commit/e9e79367f6061f5a6ea9eb9fb52d2834e8d2707c[xenclient-oe/e9e79367]: xdotool: Retire recipe., https://openxt.atlassian.net/browse/OXT-1463[OXT-1463] 
+- https://github.com/OpenXT/xenclient-oe/commit/d977e12b693117d63048b50597cc748ce5c2a791[xenclient-oe/d977e12b]: xorg: Partially restore former configuration., https://openxt.atlassian.net/browse/OXT-1463[OXT-1463] https://openxt.atlassian.net/browse/OXT-1320[OXT-1320] 
+- https://github.com/OpenXT/xenclient-oe/commit/f98ae6dd25dd442f377ded0e3c41728b9e84d4d1[xenclient-oe/f98ae6dd]: seal-system: Update evtlog overrides, https://openxt.atlassian.net/browse/OXT-1481[OXT-1481] 
+- https://github.com/OpenXT/xenclient-oe/commit/66e67f781fd75d8fdd76ac0551fdc3a2f5791020[xenclient-oe/66e67f78]: tboot: Use lcp2_mlehash instead of lcp_mlehash., https://openxt.atlassian.net/browse/OXT-1481[OXT-1481] 
+- https://github.com/OpenXT/xenclient-oe/commit/29ae9cad383d956a3256b8f40981340a1026631c[xenclient-oe/29ae9cad]: tboot: Remove references to defunct binaries., https://openxt.atlassian.net/browse/OXT-1481[OXT-1481] 
+- https://github.com/OpenXT/xenclient-oe/commit/b8c7aa556641b0449dec59687767a4546ed74b98[xenclient-oe/b8c7aa55]: tboot: Export TCG eventlog to Kernel/VMM., https://openxt.atlassian.net/browse/OXT-1507[OXT-1507] 
+- https://github.com/OpenXT/xenclient-oe/commit/565ee60f25cb175edfc36b6bbaf4a38988dd7e80[xenclient-oe/565ee60f]: tboot: Add event-log format to exported data., https://openxt.atlassian.net/browse/OXT-1507[OXT-1507] 
+- https://github.com/OpenXT/xenclient-oe/commit/fa9e90b03c7828494f62a19a3c1286f3cfaccbb2[xenclient-oe/fa9e90b0]: pcr-calc: Support TPM2.0 TCG agile log., https://openxt.atlassian.net/browse/OXT-1507[OXT-1507] 
+- https://github.com/OpenXT/xenclient-oe/commit/cb495b13e6e7fffcd148c6e25bc2612d4fddf450[xenclient-oe/cb495b13]: [upgrade] Build new 32-bit compat image to support, https://openxt.atlassian.net/browse/OXT-1539[OXT-1539] 
+- https://github.com/OpenXT/xenclient-oe/commit/e207bd08a3f20177498b2d8bac8f1d9e2c720b08[xenclient-oe/e207bd08]: pcr-calc: Fix path to legacy event-log., https://openxt.atlassian.net/browse/OXT-1507[OXT-1507] 
+- https://github.com/OpenXT/xenclient-oe/commit/f40892cce3b177305685e2da2b94b66af2b93fc3[xenclient-oe/f40892cc]: [xen] Uprev from 4.11 to 4.12, https://openxt.atlassian.net/browse/OXT-1454[OXT-1454] https://openxt.atlassian.net/browse/OXT-1604[OXT-1604] 
+- https://github.com/OpenXT/xenclient-oe/commit/b5104bfacac590f2121d842c1e6b1aad9d1a66e5[xenclient-oe/b5104bfa]: [xen] Port argo implementation of viptables, https://openxt.atlassian.net/browse/OXT-1502[OXT-1502] 
+- https://github.com/OpenXT/xenclient-oe/commit/a1d1a02f76fad1c6b84c85c65234f4bba2291c56[xenclient-oe/a1d1a02f]: [linux] Upgrade from 4.19.44 to 4.19.53, https://openxt.atlassian.net/browse/OXT-1630[OXT-1630] 
+- https://github.com/OpenXT/xenclient-oe/commit/5aa90010837d860d7cae5d081b71a88e9691798a[xenclient-oe/5aa90010]: ovmf: Amend sha256sum for PREBOOT.EXE 24.1, https://openxt.atlassian.net/browse/OXT-1633[OXT-1633] 
+- https://github.com/OpenXT/xenclient-oe/commit/a71afa5fc534b8fe7aadf994f540825f29fc26de[xenclient-oe/a71afa5f]: [bdwgc] Backport upgrade to bdwgc, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/64d5f0457cca8bb5dab1b73e12131a19aeced869[xenclient-oe/64d5f045]: [php] Backport PHP CVE-2017-9120, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/c92c63b97560ae67e48bbd21eed7872887686751[xenclient-oe/c92c63b9]: [krb5] Backport krb5 CVE-2017-11462, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/a2b61a55fa6b7a2f72bba4983c3b379c51535072[xenclient-oe/a2b61a55]: [gnulib] Upgrade to 2017-08-20.18, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/3e303969fb1766b1f10cd69d8ecd32e495ae2d73[xenclient-oe/3e303969]: [libxslt] Backport CVE-2019-11068 fix, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/d7a6e0108994237a6c6ff9b9c65a6470efbd9750[xenclient-oe/d7a6e010]: [python] Backport CVEs for python 2.7, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/e021cd4c366d9146ab2fdb580f9acaf567504fc0[xenclient-oe/e021cd4c]: [glibc] Backport Critical Glibc CVEs, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/6839b9ce1ef483cc7e1be1ac22de4617c48434e2[xenclient-oe/6839b9ce]: [icu] Backport icu CVE, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/2d67c59b3d373131851a1c051400a20e2408c039[xenclient-oe/2d67c59b]: [libsndfile1] Port 1.0.28 from oe-core master, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/376c1081699d95ccd9ea643000ba61f57aa31acc[xenclient-oe/376c1081]: [curl] Upgrade curl to 7.65.1, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/d43e719d75088150806bdae4eb0fb259d6890a4c[xenclient-oe/d43e719d]: [gettext] Backport CVE-2018-18751, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/25c49feb3d34bee6dc9bb87607cea19193a757a3[xenclient-oe/25c49feb]: [libxml2] Backport CVE-2017-8872, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/4109254f79db073da62ce312c4a9c91839599b03[xenclient-oe/4109254f]: [elfutils] Backport CVE-2018-16402, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/fda0d59eb77c68490f6f53ef58a3693486e7089f[xenclient-oe/fda0d59e]: [busybox] Backport CVE-2017-16544, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/394bb8f2478cb40d11e84e36feb3f631cbcc7ccb[xenclient-oe/394bb8f2]: [wget] Upgrade to 1.19.2 for CVEs, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/93063ce8f4cd0fc3d78f11e43b1a89dbe0997b09[xenclient-oe/93063ce8]: [xserver-xorg] Upgrade to 1.19.5 for CVEs, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/1b869c4ebde57f6a9b1c31988d675a67ee5b088e[xenclient-oe/1b869c4e]: [libpcre] Backport CVE-2017-8786, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/403617edca620cfd7642ff226cddee3d9c8e0b40[xenclient-oe/403617ed]: [sqlite3] Upgrade to 3.20.0 for CVE, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/fb9401efc0bb5297aaf49ab0c5c9263418c3e8e8[xenclient-oe/fb9401ef]: S9 : OXT-1636 : libnl : fix disabling of network, https://openxt.atlassian.net/browse/OXT-1636[OXT-1636] 
+- https://github.com/OpenXT/xenclient-oe/commit/5ee41311c723fce700d3253598576b3e6ef87202[xenclient-oe/5ee41311]: [sqlite3] Upgrade sqlite3 and pseudo, https://openxt.atlassian.net/browse/OXT-1629[OXT-1629] 
+- https://github.com/OpenXT/xenclient-oe/commit/cdd20edf8ec09920d59c36cce9534ac3f6fceec2[xenclient-oe/cdd20edf]: linux: Add PVH support config for UIVM., https://openxt.atlassian.net/browse/OXT-1649[OXT-1649] 
+- https://github.com/OpenXT/xenfb2/commit/47e8a8fa357de938112b95ebe791b097d9724d94[xenfb2/47e8a8fa]: linux: Xenfb2 intialisation conditions., https://openxt.atlassian.net/browse/OXT-1651[OXT-1651] 
+- https://github.com/OpenXT/icbinn/commit/46cd1e58e967d5cf55e0f43cfeb368c3a196b49f[icbinn/46cd1e58]: [argo] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/idl/commit/c46f742e03cde80b7fe31582f89bd6f1b6730f51[idl/c46f742e]: [argo] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/input/commit/86e5109f4c6a206a632d5fa5402168eb1d34a7ae[input/86e5109f]: [argo] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/manager/commit/8a8e9b34713a9fcfef24003b12e1404579d9493d[manager/8a8e9b34]: [argo] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/network/commit/8d684c654c240c39deecb07a4f9036853afd2eaf[network/8d684c65]: [argo] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/openxt/commit/1fe5728189cae3a0bfae63b465e61bc0a41d6fe4[openxt/1fe57281]: example-config: Reset repos and tags for upstream pyro, https://openxt.atlassian.net/browse/OXT-880[OXT-880] 
+- https://github.com/OpenXT/surfman/commit/03d811cef5fa8f0ea3a40dc169d84551f41f567e[surfman/03d811ce]: [argo] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/v4v/commit/9a9258142b6171586d4930d41ecb73c4c5abb969[v4v/9a925814]: [xen] Bring macros in line with Xen 4.12, https://openxt.atlassian.net/browse/OXT-1454[OXT-1454] 
+- https://github.com/OpenXT/vusb-daemon/commit/d0582b0cb5fdb19f27dc0dcc9187ccef6b91abf2[vusb-daemon/d0582b0c]: [argo] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xclibs/commit/a009d88c93763ecb46a6c8310038df717f857a84[xclibs/a009d88c]: [argo] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xctools/commit/7e4a54b288e2cd71a21b9bc8c69563eeccd63fad[xctools/7e4a54b2]: [argo] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/3ecc0c5f90ef41db7e90696be52cd3760a767641[xenclient-oe/3ecc0c5f]: switch to upstream blktap3, https://openxt.atlassian.net/browse/OXT-1474[OXT-1474] 
+- https://github.com/OpenXT/xenclient-oe/commit/feff5a5365486422a21be5fa3e1ca4c6854ca361[xenclient-oe/feff5a53]: xen: upgrade to 4.11, https://openxt.atlassian.net/browse/OXT-1454[OXT-1454] 
+- https://github.com/OpenXT/xenclient-oe/commit/156dfbf0424be89d0afc0b882d06151067825042[xenclient-oe/156dfbf0]: OXT-1476: xen: remove hardcoded target arch in recipes, https://openxt.atlassian.net/browse/OXT-1476[OXT-1476] 
+- https://github.com/OpenXT/xenclient-oe/commit/ab84e1eb05e7c373d896e72f4e2ce8851a8a4f19[xenclient-oe/ab84e1eb]: [xen] Temporarily use v4v in place of Argo, https://openxt.atlassian.net/browse/OXT-1454[OXT-1454] 
+- https://github.com/OpenXT/xenclient-oe/commit/c226fcf92834beaf2686f9c888dfc6fd335cff13[xenclient-oe/c226fcf9]: [v4v] Remove recipes and replace with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/b0ec735be92080c98f6b21abf90aad2baf386e3e[xenclient-oe/b0ec735b]: [kernel] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/0781a70cb9b112c47ff4798b01e9d36dd6e21238[xenclient-oe/0781a70c]: [xen] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/c3ede3ab120cf9a4fa2548322672f593b9e28f4a[xenclient-oe/c3ede3ab]: [xen] Add argo-suppress-debug-messages.patch, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/a0b37112f0291e49aac82fc63fcb6c0e31ed975c[xenclient-oe/a0b37112]: [qemu] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/113e4db1a14beff8b341e55b90cfeb128d1f9dc3[xenclient-oe/113e4db1]: [dom0] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/8dd86aec0cdc643d39aefec45eb27f01e65a141e[xenclient-oe/8dd86aec]: [uivm] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/b553b1df723558826c31121c7db37a66a5167e7f[xenclient-oe/b553b1df]: [ndvm] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/1717f71676b061b78701a99320db760b78db25ad[xenclient-oe/1717f716]: [syncvm] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/d9070438b15e04ce46af6a0d8e6f0ec8e25d47ef[xenclient-oe/d9070438]: [selinux] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xenclient-oe/commit/aab7299e89a3a1abe5436a91fc37e1e597162141[xenclient-oe/aab7299e]: [OE images] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xsm-policy/commit/3949dc2c6628d62f269cc9ebc535670ae2886946[xsm-policy/3949dc2c]: [argo] Replace v4v with argo, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/xsm-policy/commit/7fdf2907af1bbc515feb28c28ce4b394d2265f21[xsm-policy/7fdf2907]: [argo] Add new flask rules, https://openxt.atlassian.net/browse/OXT-1464[OXT-1464] 
+- https://github.com/OpenXT/fbtap/commit/67520bf111d6a346fb995c5abad3215061f0778a[fbtap/67520bf1]: git: Add gitignore.
+- https://github.com/OpenXT/idl/commit/b656f066aa046856c9f499f52f0528482d5cf4b5[idl/b656f066]: Added Bios option to xenmgr interfaces
+- https://github.com/OpenXT/input/commit/a675f6bd9fd5d6abd718fafee74f698507731be1[input/a675f6bd]: input: Potential overflow.
+- https://github.com/OpenXT/input/commit/61677f0a68a21d947694f5426e599ef1e94107ec[input/61677f0a]: input: Fallthrough statements.o
+- https://github.com/OpenXT/input/commit/e93e395966f5c9fd6f7925fb4328d9b5e8274e25[input/e93e3959]: input: Libevent 2.x changes.
+- https://github.com/OpenXT/input/commit/0e3c144640715b71309cf70aa9f7e5113fb6f277[input/0e3c1446]: Adjust for 64 bits
+- https://github.com/OpenXT/input/commit/f2e5f19accff9dbdadf885bb961eaaabe9163878[input/f2e5f19a]: Add missing 64 bits adjustment
+- https://github.com/OpenXT/input/commit/92e46258db535706e62a4b3e1dad0d83d8857074[input/92e46258]: [switcher] Replace macro with individual functions
+- https://github.com/OpenXT/installer/commit/4e6f6ecae6f535916eefe83367bb2332785558f7[installer/4e6f6eca]: Install tboot and sinit modules to ESP
+- https://github.com/OpenXT/installer/commit/900047d604190c491a8ba6b110c8eadab0a026ce[installer/900047d6]: [upgrade] Don't attempt to claim the TPM if upgrading
+- https://github.com/OpenXT/installer/commit/316ee82885a88dafd38f61cd84c2ac1130dc1432[installer/316ee828]: [tpm2-tools] Uprev from v2.0.0 to v3.1.3
+- https://github.com/OpenXT/installer/commit/7c105d2cdf0ac3cd7db739d9f2382637c0495858[installer/7c105d2c]: part2: Add support for gunzip-ing files
+- https://github.com/OpenXT/installer/commit/c57e6b24496c1a087d2a9d88663b9d3c6234fbcc[installer/c57e6b24]: install-main: Return failure from create_lv
+- https://github.com/OpenXT/installer/commit/9ce5db866dabcaf86bdbf7ec6d6085297a167ba3[installer/9ce5db86]: install-main: Add do_cmd to seal_system
+- https://github.com/OpenXT/installer/commit/85c3240d423a85fcf4e513b3b610dcb392a64d2f[installer/85c3240d]: install-main: Report mount_upgrade_compat failures
+- https://github.com/OpenXT/installer/commit/29a969cdaf16f600dde224702885266c45ed2688[installer/29a969cd]: Updates based on Eric's comments
+- https://github.com/OpenXT/installer/commit/3cac2d9e8b09c91700d82f0d785cf914ba063859[installer/3cac2d9e]: Update based on Jean's comment
+- https://github.com/OpenXT/installer/commit/cf68a04e8864113a564ce581068c86cad9ca30ec[installer/cf68a04e]: Fix a typo in user facing message
+- https://github.com/OpenXT/manager/commit/c1fc2e2269c53256af62529bf9e50f359f7d9ad9[manager/c1fc2e22]: xec-vm: fix suspend/resume to/from file
+- https://github.com/OpenXT/manager/commit/d50bcc5b2678fa5007c854c90905ce41e890a737[manager/d50bcc5b]: Add BIOS option for guest config
+- https://github.com/OpenXT/manager/commit/02aea25309b934f00b1c39fc07a223f8406f2514[manager/02aea253]: xenmgr: Remove unused stubdom settings
+- https://github.com/OpenXT/manager/commit/c7137eb13c4a78fa59861dd3a58178e50c814d73[manager/c7137eb1]: xenmgr: Remove mountOffset & readPartTable
+- https://github.com/OpenXT/manager/commit/ca8406444f3179a00e2c5a77ebf8d363bc70aad7[manager/ca840644]: xenmgr: Throw error for invalid partitions
+- https://github.com/OpenXT/manager/commit/e55315815ec167c4660789eb8557e444ba9885f3[manager/e5531581]: rpc-proxy: Lower verbosity
+- https://github.com/OpenXT/manager/commit/9a8ab9909798b41ebd85b8a93a55c45d4fe45758[manager/9a8ab990]: xenmgr: Print the uuid during state checks
+- https://github.com/OpenXT/manager/commit/6f624116deb48db8fbd77ba72c7f3c70ddbda8b5[manager/6f624116]: rpc-proxy: Lower EOF verbosity level
+- https://github.com/OpenXT/manager/commit/8e93507569779c04a17f24070a7568a78f0d30fa[manager/8e935075]: xenmgr: Only pass --partscan when expecting a partition
+- https://github.com/OpenXT/manager/commit/b16cb801ed5064ee3ec1e2ca12df35470a689f5b[manager/b16cb801]: xenmgr: Reconnect VIFs manually
+- https://github.com/OpenXT/manager/commit/f276b397dc8347d07f84846f95b763d68d2e49e4[manager/f276b397]: xenmgr: Use /dev/hvc0 for measurement failure messages
+- https://github.com/OpenXT/manager/commit/9962de9eb97eb588d19a45347126232c9d07ba04[manager/9962de9e]: xenmgr: avoid leaking FDs to run scripts
+- https://github.com/OpenXT/manager/commit/dde33eec06297cbb518556583c1202e1c3568701[manager/dde33eec]: xenmgr: Fix Power control affects VM and Host
+- https://github.com/OpenXT/manager/commit/99377bc6aed1efb6ac2891df4f90322ebb385eb0[manager/99377bc6]: xenmgr: Add xl trigger power to HVM shutdown
+- https://github.com/OpenXT/manager/commit/33b2d25be0807ca514613d3694d2438517553c96[manager/33b2d25b]: xenmgr: Close some FD leaks
+- https://github.com/OpenXT/manager/commit/509819a00867f900127b70dade9c2b05fc1d9c2a[manager/509819a0]: [xenmgr] Default to hvm ndvm for x64
+- https://github.com/OpenXT/meta-openxt-haskell-platform/commit/1c9f4c415600c1c59feb955f7cc1c28990cfc97c[meta-openxt-haskell-platform/1c9f4c41]: [ghc] Include upstream patches for x64 support
+- https://github.com/OpenXT/meta-openxt-haskell-platform/commit/de80ecdc55d146a7f892ef572ed860b8f0c0a471[meta-openxt-haskell-platform/de80ecdc]: ghc: add yet another segv fix
+- https://github.com/OpenXT/network/commit/f07e0bb834f93e95145172deb927da4e04304002[network/f07e0bb8]: dnsmasq-script: Use db-rm-dom0
+- https://github.com/OpenXT/openxt/commit/be766ad85605af6f7f3d976acedd1427ed12c091[openxt/be766ad8]: oe-core: Use tip of pyro.
+- https://github.com/OpenXT/openxt/commit/c5f455d3249cec69a4e256b98da59000c625c1f8[openxt/c5f455d3]: stable-8 is branched, bump master version to 9
+- https://github.com/OpenXT/openxt/commit/ca7b17c821fdf6ca7bbbf8ce011de2d6281ab9cd[openxt/ca7b17c8]: Revert "STABLE-8: openxt: Use fixed revisions for stable branch."
+- https://github.com/OpenXT/openxt/commit/518f8d85416150ed7d05b73c0f0ad414384e4b38[openxt/518f8d85]: example-config: Add meta-openxt- tags
+- https://github.com/OpenXT/openxt/commit/2d51d328dcd1021e331bba99cc7eb1e3715b9a81[openxt/2d51d328]: example-config: Use git submodules by default
+- https://github.com/OpenXT/openxt/commit/e63c121755913d55c9fc81df147fb600a84d99f7[openxt/e63c1217]: oe/setup.sh: Create .quiltrc in OE build container
+- https://github.com/OpenXT/openxt/commit/3ff7815cce1bf28fd275996359f29b09a28bb1b8[openxt/3ff7815c]: Add build script support for Ubuntu 18.04
+- https://github.com/OpenXT/openxt/commit/ff333173bba84e0761d1eeff6088139ed8c527cb[openxt/ff333173]: Add forward compatibility for lxc configs
+- https://github.com/OpenXT/openxt/commit/6dd4b0d0c008888e7daf9d9820e120ba059578f0[openxt/6dd4b0d0]: Address comments in PR #322
+- https://github.com/OpenXT/openxt/commit/73218f8478306e7d9cd3ddfcf47bdef2205b716b[openxt/73218f84]: debian install script: ensure current kernel headers are installed
+The kernel headers are automatically installed as a dkms dependency.
+However, apt will install the headers for the latest kernel, which
+  is not necessarily the current kernel, especially if the user
+  didn't dist-upgrade as recommended.
+- https://github.com/OpenXT/openxt/commit/0b7568c2da1bbb739efb960f79a4064ac06f8f0c[openxt/0b7568c2]: build-scripts: reverse build order
+OE takes 3 hours to build, Centos Debian and Windows each take about 5 minutes.
+However, those last 3 are about as likely to fail as OE, maybe even more so for Windows.
+In an attempt to fail as fast as possible, build:
+- Windows first, that randomly breaks, especially around monthly updates
+- Centos second, since the container tends to fail to start after builder reboots
+- Debian third, less likely to break but really quick
+- OE last, since it's the longest step
+- https://github.com/OpenXT/openxt/commit/31c25524bdf27249e3680609c1b3529fb29eaa56[openxt/31c25524]: Fix librpmbuild package name
+- https://github.com/OpenXT/openxt/commit/850f00be4ba579a95bcc87f541f9ca2d08bda99e[openxt/850f00be]: meta-selinux: freeze layer to latest safe commit
+The meta-selinux layer doesn't have a pyro branch, so we were following master.
+But master aligns with the OE/Yocto master branches, not pyro.
+As master diverges, the probability of new changes breaking OpenXT increases.
+This is what just happened.
+This freezes the layer to prevent that from happening again.
+- https://github.com/OpenXT/openxt/commit/5e1d2a933511ab8b4ed51554bdff349dd9657073[openxt/5e1d2a93]: build-scripts: switch to 64 bits
+- https://github.com/OpenXT/openxt/commit/105c887bf1f72d89b514b3cd4837dff89ecdc07f[openxt/105c887b]: build-scripts: add symlink in OE rootfs to fix the build
+- https://github.com/OpenXT/openxt/commit/95f190ef4fa92075544c863d25a5b5f805938e33[openxt/95f190ef]: build-scripts: manifest: add upgrade-compat
+- https://github.com/OpenXT/openxt/commit/9fb2379622aa38eb070182bfecda52c68b60bc9c[openxt/9fb23796]: Freeze all remote layers in stable-9
+- https://github.com/OpenXT/openxt/commit/975579ed202b4fafc12afde94dbde5807ad1e64c[openxt/975579ed]: Allow upgrade from 8.0.1 and 8.0.2 to 9.0.0, at least for now
+- https://github.com/OpenXT/openxt/commit/ebbae35302e8b90e0afe548ea6ceed7c3b4acdf2[openxt/ebbae353]: do_build: Remove sysroot
+- https://github.com/OpenXT/openxt/commit/050f5d1497ff8c6455fa22584700c2518f2a0b1e[openxt/050f5d14]: do_build: Allow options to override .config
+- https://github.com/OpenXT/openxt/commit/a816b8f0387a02876f7915c5ee5671ea179a1ab5[openxt/a816b8f0]: do_build: Print date and time at completion
+- https://github.com/OpenXT/openxt/commit/e0c483ea33d48dc2e3427ff8502348ea1ad72b7c[openxt/e0c483ea]: build-scripts: linux install: skip the v4v packages
+Build and ship them but don't install them by default, since OpenXT uses argo now.
+They can still be installed manually with apt-get/yum if needed.
+- https://github.com/OpenXT/pv-linux-drivers/commit/8c2ad728a809eeb18ed3daed026ab66bf5740f26[pv-linux-drivers/8c2ad728]: openxt-vusb: Add timeout to device teardown
+- https://github.com/OpenXT/pv-linux-drivers/commit/b249e32ff270329c9a9c714c70a68ab725fba809[pv-linux-drivers/b249e32f]: openxt-vusb: fix for Linux 4.19
+- https://github.com/OpenXT/surfman/commit/46810bd66750288bf04cab0806ae03ae2e0c9deb[surfman/46810bd6]: drm: Initialize offset with psurface.
+- https://github.com/OpenXT/surfman/commit/356b9231a1cfd2f7c233cd116ad51738cdf9f50a[surfman/356b9231]: drm: Amend printf format.
+- https://github.com/OpenXT/surfman/commit/2684b2eac0033582aa34b81dbc71419a1fbc3f49[surfman/2684b2ea]: surfman/drm: Makefile dependencies.
+- https://github.com/OpenXT/surfman/commit/69f614623d044b9fcb1dcc1aa14f363c689efaad[surfman/69f61462]: surfman: xc_domain_getinfo usage.
+- https://github.com/OpenXT/sync-client/commit/78fad452daf82d25a186aa91967595432b61f926[sync-client/78fad452]: Convert from v4v to argo
+- https://github.com/OpenXT/toolstack-data/commit/9cf8b11ace473706ec4c2c47a7fcb59573b641ae[toolstack-data/9cf8b11a]: Added BIOS option to UI
+- https://github.com/OpenXT/toolstack-data/commit/ceb3d7eb8ee07835563ebd4eeb1cbd67ade36b3b[toolstack-data/ceb3d7eb]: Rename SeaBIOS to Legacy in option menu
+- https://github.com/OpenXT/v4v/commit/843a7fdadcdb914347113c0fa82a0da3972e5da9[v4v/843a7fda]: Rebase v4v on 4.19
+- https://github.com/OpenXT/vusb-daemon/commit/d016da73bbaebd8f91a1b1c5602103a74bb96a6e[vusb-daemon/d016da73]: Use 1 select() call and let it block
+- https://github.com/OpenXT/xc-windows/commit/fb5e26facd971f3321b2c4a30ac6911b39d6039c[xc-windows/fb5e26fa]: Remove disk-related drivers from the build
+- https://github.com/OpenXT/xclibs/commit/03e0832e1c8905922b4ac3c0953ce007dde1b358[xclibs/03e0832e]: [xclibs] Make sure foreign calls use 64 types
+- https://github.com/OpenXT/xctools/commit/ad4dff17a7c9522afd95df9f71db8e0d1f6461c5[xctools/ad4dff17]: xcpmd: snprintf truncation warnings.
+- https://github.com/OpenXT/xctools/commit/fdb486112ba92994e0f37dcb049620c50b6d9549[xctools/fdb48611]: xcpmd: libevent2 macro conflict.
+- https://github.com/OpenXT/xctools/commit/838e57b61ca824a3ed9b90096a0cd1e72de864d5[xctools/838e57b6]: Adjust for 64 bits
+- https://github.com/OpenXT/xctools/commit/2026cbb5a862aaa7779dcdd2e8386e90dd184349[xctools/2026cbb5]: [audio_helper] Remove "Dates Modified" section
+- https://github.com/OpenXT/xenclient-oe/commit/abad3bec15dcafdb30b1d8a1d1492cfa02da8cc6[xenclient-oe/abad3bec]: rsync: PACKAGECONFIG is attr not xattr.
+- https://github.com/OpenXT/xenclient-oe/commit/a98a4ee607e2e04e47fef3ae53721191d415c344[xenclient-oe/a98a4ee6]: xorg-lib: libxrandr configure options.
+- https://github.com/OpenXT/xenclient-oe/commit/07c91619003f9ef41430e5b56c538dc7f0d3aeed[xenclient-oe/07c91619]: xorg-drivers: Silence QA warnings.
+- https://github.com/OpenXT/xenclient-oe/commit/ef446353cfcb9c120a91623626536d589665ef0a[xenclient-oe/ef446353]: refpolicy: fix some tapdisk AVCs
+- https://github.com/OpenXT/xenclient-oe/commit/bcc5d5c687c9fa455c85f5c6746f3545cdd5bb41[xenclient-oe/bcc5d5c6]: Update Xen patches: support for SecureBoot and minor fixes
+- https://github.com/OpenXT/xenclient-oe/commit/477e393e9549d74c9d97e4a293cc9242ab2df20a[xenclient-oe/477e393e]: Xen 4.10: remove unused patches and incorrect comment
+- https://github.com/OpenXT/xenclient-oe/commit/3fc95186103c9f452f12e971b9dea470c07a9d74[xenclient-oe/3fc95186]: Xen 4.10: attempt at fixing xen-translate.patch
+- https://github.com/OpenXT/xenclient-oe/commit/14d95f04dc23b78998fa67166ec3e36b01cfb5d2[xenclient-oe/14d95f04]: libxl: fix save by allowing vNUMA-enabled guests to be saved
+- https://github.com/OpenXT/xenclient-oe/commit/ed442a764dcf4446e94dd0978c382d292763acb2[xenclient-oe/ed442a76]: linux: Remove Remote Control & Infrared drivers
+- https://github.com/OpenXT/xenclient-oe/commit/79f97bc852ae721333dda65b094da76ff7da8a49[xenclient-oe/79f97bc8]: xenclient-installer: Make package arch-independent
+- https://github.com/OpenXT/xenclient-oe/commit/fcbc5ba2b0dde703d0a59f3f8c31c04943c8d2d1[xenclient-oe/fcbc5ba2]: e2fsprogs: fork a meta-selinux patch
+meta-selinux doesn't have a pyro branch, so we track its master branch.
+However, openembedded-core updated e2fsprogs (to 1.44.3) in master.
+So meta-selinux updated their e2fsprogs patches, and one of them doesn't
+  apply to e2fsprogs 1.43.4 anymore, so this commit forks it.
+This is not ideal, but it's that or freezing meta-selinux.
+(or convince them to start maintaining a pyro branch)
+- https://github.com/OpenXT/xenclient-oe/commit/b73b08375d1c65d4051a3124cfdc541913e44445[xenclient-oe/b73b0837]: openxt-ml: Add usage to seal-system.
+- https://github.com/OpenXT/xenclient-oe/commit/f93c436f30859448b17cbe49b6344e523daa995a[xenclient-oe/f93c436f]: Launch tboot from Xen.efi
+- https://github.com/OpenXT/xenclient-oe/commit/fdaa3dcc8da776d34a764be99d5f27d12c41899e[xenclient-oe/fdaa3dcc]: dom0: disable auto-loading of a couple modules
+dom0 doesn't provide network backends in OpenXT, ndvm does, so xen-netback is not needed.
+The wacom module isn't even built for dom0.
+- https://github.com/OpenXT/xenclient-oe/commit/4c8e4e99314248dc74c26cbb420c7229c84924b0[xenclient-oe/4c8e4e99]: Fix-up ovmf recipe to force 64-bit and install the bin Xen needs
+- https://github.com/OpenXT/xenclient-oe/commit/281956b6cfe1e2f69a0825fb461d58a5d7e35565[xenclient-oe/281956b6]: xen: Patch-queue initial refresh.
+- https://github.com/OpenXT/xenclient-oe/commit/77f07da792cd2311c7f6529f90296b04d491c32c[xenclient-oe/77f07da7]: xen: Package xen-diag.
+- https://github.com/OpenXT/xenclient-oe/commit/4a2d14ff4526718a36a02571e378c346439fa772[xenclient-oe/4a2d14ff]: syncvm: Specify read-only-rootfs IMAGE_FEATURES
+- https://github.com/OpenXT/xenclient-oe/commit/00c70589519dc875bdf63c7be0498749fd850e37[xenclient-oe/00c70589]: dbd: Add PV variable
+- https://github.com/OpenXT/xenclient-oe/commit/b8c5bf5a5a70c80d402c92fb54b4541c8053d325[xenclient-oe/b8c5bf5a]: uid: Add PV variable
+- https://github.com/OpenXT/xenclient-oe/commit/bc70ada48e990c781fe343715c6bf16d00d8d77b[xenclient-oe/bc70ada4]: xenclient-rpcgen:Add PV variable
+- https://github.com/OpenXT/xenclient-oe/commit/392f6def989d4bf226ee2bf3705606b4828351ef[xenclient-oe/392f6def]: heimdallr: Add PV variable
+- https://github.com/OpenXT/xenclient-oe/commit/9fd06a1574e3f830b40b86ac62a5a5cc9c63d3af[xenclient-oe/9fd06a15]: libxl: Refresh patch queue
+- https://github.com/OpenXT/xenclient-oe/commit/77ab8acef7649b29a4ca55ee8c9aec5d1acf4ded[xenclient-oe/77ab8ace]: tboot: Unmask NMI for Xen 4.11 patching.
+- https://github.com/OpenXT/xenclient-oe/commit/492de845f4c8afd8fe886d6b57cdfbd0063b9ca8[xenclient-oe/492de845]: installer: remove console=tty2 on the kernel cmdline
+In the the installer, we don't want the kernel to print anything on screen.
+The kernel still logs to dmesg and /var/log/kern.log.
+Additionally, the installer shows /var/log/messages in tty4.
+With this fix, the installation dialogs should not be disrupted anymore.
+- https://github.com/OpenXT/xenclient-oe/commit/ba35765a1e08b480d8d274d7ec8377aa509a16ba[xenclient-oe/ba35765a]: openxt-main: Remove nfs from DISTRO_FEATURES
+- https://github.com/OpenXT/xenclient-oe/commit/fa05a05f9f6e7acb410f567c7ebac37f1bc97f2e[xenclient-oe/fa05a05f]: Removes line that was deleting pkg-config directory/files
+- https://github.com/OpenXT/xenclient-oe/commit/867c8eac864ba1499f79f96351ab6c68a045e9f7[xenclient-oe/867c8eac]: openxt_image_types: Fix .vhd size calculation
+- https://github.com/OpenXT/xenclient-oe/commit/ba2da6d54047eb304549aa542ed2de30814f575a[xenclient-oe/ba2da6d5]: initrdscripts: add openxt framework modules
+- https://github.com/OpenXT/xenclient-oe/commit/e2a14f972b9ad022633f5e4db7964a7498b5c5f9[xenclient-oe/e2a14f97]: dom0-tweaks: change runlevel declaration
+- https://github.com/OpenXT/xenclient-oe/commit/ce9431c9eba025a979794d8e349ef1913ca03297[xenclient-oe/ce9431c9]: initramfs-image: adopt initramfs-framework init
+- https://github.com/OpenXT/xenclient-oe/commit/31ce68faa9fc2ec7baaef3e3b5e0a2b0022b55ac[xenclient-oe/31ce68fa]: openssh: Package openssh-sshd-tcp-init generically
+- https://github.com/OpenXT/xenclient-oe/commit/65d38cd738fbebc69876abb40b98313862e1b6dd[xenclient-oe/65d38cd7]: openssh: RDEPEND on libv4v
+- https://github.com/OpenXT/xenclient-oe/commit/942243b80f1d8d70d817cc65846457dab396ae35[xenclient-oe/942243b8]: udev: Delete remnant file
+- https://github.com/OpenXT/xenclient-oe/commit/6213398535c0c1ffa8c8b15942915652f3a2f930[xenclient-oe/62133985]: rsyslog: Remove incorrect logrotate.rsyslog
+- https://github.com/OpenXT/xenclient-oe/commit/c0874138059482763ca6b0300938a0b6d8531929[xenclient-oe/c0874138]: rsyslog: Have openxt-installer use dom0 conf
+- https://github.com/OpenXT/xenclient-oe/commit/145787b4378801decd157d9a8793680ff3ad20ac[xenclient-oe/145787b4]: rsyslog: Install a default rsyslog.conf
+- https://github.com/OpenXT/xenclient-oe/commit/4cf2173c6686ab7842ce1f041ffd10602aeed899[xenclient-oe/4cf2173c]: Make sure there is buffer control on high memory pages
+- https://github.com/OpenXT/xenclient-oe/commit/29a764f0e423f8787c8612f92166f92002293cc5[xenclient-oe/29a764f0]: grub.cfg: sanitize xen console options
+Remove duplicated statements from the Xen commandline
+- https://github.com/OpenXT/xenclient-oe/commit/4d7ec0069d5e71bba91c8d546824f3fd2c2eda3b[xenclient-oe/4d7ec006]: linux: Fix domU build of usbback
+- https://github.com/OpenXT/xenclient-oe/commit/9318cb0c8b18711212cdb3001971c6d16150be74[xenclient-oe/9318cb0c]: [recipes-openxt] remove extra directory depth
+- https://github.com/OpenXT/xenclient-oe/commit/df0e95b92061d8deb6edffd7ffb6d751e6a96437[xenclient-oe/df0e95b9]: [recipes-openxt] remove script guest-process-stats
+- https://github.com/OpenXT/xenclient-oe/commit/82ef124ab2eb1121d4199c1e3c0908800a2b7f59[xenclient-oe/82ef124a]: [layer] move upstream recipes
+- https://github.com/OpenXT/xenclient-oe/commit/ca42ac5288f8375bf864b66d59e271296e75a554[xenclient-oe/ca42ac52]: init.root-ro: Remove restorecon /storage
+- https://github.com/OpenXT/xenclient-oe/commit/b68bc5b9ff88ce84ad9a0eefc2a2539cce875407[xenclient-oe/b68bc5b9]: rsyslog: Drop klog messages from VMs
+- https://github.com/OpenXT/xenclient-oe/commit/09cf303d84f563e1c8bb57472124351a0bae6f78[xenclient-oe/09cf303d]: rsyslog-conf-dom0: Package dom0 conf
+- https://github.com/OpenXT/xenclient-oe/commit/9edbf3d4d70befbc94c8cb6692bd2c03da122f80[xenclient-oe/9edbf3d4]: rsyslog: Split conf files into seperate subpackage
+- https://github.com/OpenXT/xenclient-oe/commit/a5cbc5fd082781508be20095eac0082961d1900b[xenclient-oe/a5cbc5fd]: iproute2: Delete .bbappend
+- https://github.com/OpenXT/xenclient-oe/commit/0f46d22edc3abdc2453dad6288499e8984b32197[xenclient-oe/0f46d22e]: xen: Remove iproute2 hack
+- https://github.com/OpenXT/xenclient-oe/commit/d9e10c78b8fe78970fab0c9a85297a880783df3a[xenclient-oe/d9e10c78]: Add Linux 4.19 support and change the default preference to 4.19
+- https://github.com/OpenXT/xenclient-oe/commit/47fe41a0d415a01a10d7fd1261dd0363cb7b5eb8[xenclient-oe/47fe41a0]: refpolicy: Fixup audio_helper avcs
+- https://github.com/OpenXT/xenclient-oe/commit/4198c49216a5e0b94909d374d621a5f021c19418[xenclient-oe/4198c492]: Use /etc/asound.conf
+- https://github.com/OpenXT/xenclient-oe/commit/214b0d78be3b41be3d369aa15679b7da5e2b4b45[xenclient-oe/214b0d78]: alsa: Delete .bbappend
+- https://github.com/OpenXT/xenclient-oe/commit/4ce01bebaecaebea75b4f502842b2597c230c5c9[xenclient-oe/4ce01beb]: xen-libxl: Re-enable read-only IDE devices
+- https://github.com/OpenXT/xenclient-oe/commit/9018f93314a24d6144d85dc089dd6ae6271ac951[xenclient-oe/9018f933]: xen-libxl: Drop COLO changes from read-only IDE disks
+- https://github.com/OpenXT/xenclient-oe/commit/339c1e22817fd6e63be00095299fe82851f3d36e[xenclient-oe/339c1e22]: xen-libxl: Patch context updates
+- https://github.com/OpenXT/xenclient-oe/commit/100b7b0417ef2a5c1ec94aed2186191ded2c71df[xenclient-oe/100b7b04]: Allow xenstored hypercall on Linux 4.19
+- https://github.com/OpenXT/xenclient-oe/commit/eb4efd8432f99295402a991c22b2b8e1882a318e[xenclient-oe/eb4efd84]: module-signing: Handle no module case
+- https://github.com/OpenXT/xenclient-oe/commit/f593ba7a32ab2182e0d98465e158d24f6568c0db[xenclient-oe/f593ba7a]: initrd: stubdomain initrd standalone recipe.
+- https://github.com/OpenXT/xenclient-oe/commit/32e571a96cf25f358eb8fd4ded403bd6deac1fd5[xenclient-oe/32e571a9]: libxl: Change libxl-blktap3-do-not-destroy-in-use-tapdevs to tap_list_t
+- https://github.com/OpenXT/xenclient-oe/commit/f52432c108f64ed34ba9a475bc372140289610cf[xenclient-oe/f52432c1]: refpolicy: Turn global_ssp on
+- https://github.com/OpenXT/xenclient-oe/commit/28d0def79d079f4f5c0278faa394f6bf31e0227f[xenclient-oe/28d0def7]: [network-manager] Fix NM and nm-applet for x64
+- https://github.com/OpenXT/xenclient-oe/commit/fe47e426e4bbdf66b019f873d4272a9a3b0eb32f[xenclient-oe/fe47e426]: [linux] Build dom0 and service VM kernels x64
+- https://github.com/OpenXT/xenclient-oe/commit/f8dcfa3c83caeddee5c32ec60d24dc5ec16d12f3[xenclient-oe/f8dcfa3c]: [qemu] Fix compile error for qemu on x64
+- https://github.com/OpenXT/xenclient-oe/commit/c11da6014c6e1fb33ec2ba951edfb69765653a69[xenclient-oe/c11da601]: [efi] Turn on efi runtime services in the kernel
+- https://github.com/OpenXT/xenclient-oe/commit/87512946c63486556e0a6309d7e5b55d8c486f13[xenclient-oe/87512946]: [pciutils] Update the pciutils to support
+- https://github.com/OpenXT/xenclient-oe/commit/dc7819eeb9e89e7545d498b662caa98140956735[xenclient-oe/dc7819ee]: [xen] Build 64-bit Xen and the xen pv-shim
+- https://github.com/OpenXT/xenclient-oe/commit/ba78ccf99380ec6e7c8092b257cd04e46387bfa5[xenclient-oe/ba78ccf9]: [webkit] Drop enchant as a dependency
+- https://github.com/OpenXT/xenclient-oe/commit/3705dd5882aedc3572c5283aac19069d4b575007[xenclient-oe/3705dd58]: [libtirpc] Compile with fPIC
+- https://github.com/OpenXT/xenclient-oe/commit/8c4608f0de480798eb208f7e5953c8bd1db8f5eb[xenclient-oe/8c4608f0]: svirt-interpose: fix warnings and segfault
+- https://github.com/OpenXT/xenclient-oe/commit/67c06bbc250da7d24d6059d046249a2497ce1b58[xenclient-oe/67c06bbc]: rsyslog: Fix broken packaging
+- https://github.com/OpenXT/xenclient-oe/commit/ad3065ae023411bbcd23a05b5d904387bb18b0ff[xenclient-oe/ad3065ae]: rsyslog-conf-dom0: Fix RPROVIDES
+- https://github.com/OpenXT/xenclient-oe/commit/c33eeed6cb8d31094db668fb3879bdbb19c63c72[xenclient-oe/c33eeed6]: linux-firmware: update to latest rev
+- https://github.com/OpenXT/xenclient-oe/commit/ba1c20c13aceab34d77722688b723b9d0429a6fa[xenclient-oe/ba1c20c1]: openxt-main: Add PREFERRED_RPROVIDER_rsyslog-conf
+- https://github.com/OpenXT/xenclient-oe/commit/184460edaec02e9879ce9ca4066f252e1785807d[xenclient-oe/184460ed]: installer: bump rootfs size to accomodate new firmwares
+- https://github.com/OpenXT/xenclient-oe/commit/02f176cf93a1d73dccaf36b5fedccb11ab555ba2[xenclient-oe/02f176cf]: Update 4.19 Kernel for OpenXT to 64-bit
+- https://github.com/OpenXT/xenclient-oe/commit/5b3e87b73a687adbc3bf6961ebdb2bbc4e72ac8b[xenclient-oe/5b3e87b7]: tboot: pcr-calc fixes and small refactoring.
+- https://github.com/OpenXT/xenclient-oe/commit/d2231a6d412ade590b92d608526d0a45d974958b[xenclient-oe/d2231a6d]: tboot: pcr-calc read event-log from file.
+- https://github.com/OpenXT/xenclient-oe/commit/6d4f238926191707ebdccc2096178d9bc4bfe54e[xenclient-oe/6d4f2389]: Update console-setup to 1.188 while also updating the SRC_URI
+- https://github.com/OpenXT/xenclient-oe/commit/a7fd0fccd97663e0578ff1f9f80b03112f16b1b6[xenclient-oe/a7fd0fcc]: pcr-calc: Use DEBUG definition from Config.mk.
+- https://github.com/OpenXT/xenclient-oe/commit/0cb515b625751c99a88531a4335c32b474ac41c4[xenclient-oe/0cb515b6]: logrotate: Amend recipe typos.
+- https://github.com/OpenXT/xenclient-oe/commit/21e66e8bc5eda3ca7952a23b66a1e6f94cef2ccb[xenclient-oe/21e66e8b]: pcr-calc: Futur proof debug macro.
+- https://github.com/OpenXT/xenclient-oe/commit/35fffdebe76f34b3f91bf16158a4cd90cf4941b0[xenclient-oe/35fffdeb]: module-signing: Re-work sign-file selection
+- https://github.com/OpenXT/xenclient-oe/commit/6092722300314212eb4b801fbcee1cbdcbc8c8ba[xenclient-oe/60927223]: linux: Don't set tty0 as preferred console for pv.
+- https://github.com/OpenXT/xenclient-oe/commit/9640841fcb137631a2feeb5785fc7585054b665a[xenclient-oe/9640841f]: Add tag MULTIBOOT2_TAG_TYPE_EFI64 from Xen EFI to TBOOT
+- https://github.com/OpenXT/xenclient-oe/commit/d6633d901882ef9ad24c8a4622eab80ecf8c2ea7[xenclient-oe/d6633d90]: modules: Split into non-machine specific pkgs.
+- https://github.com/OpenXT/xenclient-oe/commit/baf6977dc57ffc134e1af2e1f51704d21a48d87e[xenclient-oe/baf6977d]: modules-installer: No modules in the image.
+- https://github.com/OpenXT/xenclient-oe/commit/9ccb9d036fc9de34e3d3cb2702e703d2af4f7359[xenclient-oe/9ccb9d03]: seal-system: Exit if unable to read rootfs
+- https://github.com/OpenXT/xenclient-oe/commit/2162da412f1dbc4280235603ad51df9b78103a09[xenclient-oe/2162da41]: Fix forward seal: Revert "lvm udev rules: avoid trying to create bad symlinks"
+- https://github.com/OpenXT/xenclient-oe/commit/ba8f880432631bf197e3a9cf101c6189c75eb534[xenclient-oe/ba8f8804]: openxt_image_types: Support ext4 disk images
+- https://github.com/OpenXT/xenclient-oe/commit/c40fe9be096ea52d1dd783ae524bdefaee691c70[xenclient-oe/c40fe9be]: Uprev the Linux 4.19 kernel from 4.19.32 to 4.19.44
+- https://github.com/OpenXT/xenclient-oe/commit/d6a725c891049c22d34d826e8c69d944d0a3f010[xenclient-oe/d6a725c8]: Update the intel microcode to 20190312
+- https://github.com/OpenXT/xenclient-oe/commit/ec10d239b0c55768e5bf0468b485f9fa5c110718[xenclient-oe/ec10d239]: Add the 20190514a microcode
+- https://github.com/OpenXT/xenclient-oe/commit/253272f4f9fe877dff5e463fc6661a8750ceba07[xenclient-oe/253272f4]: Update the defconfig's for Linux 4.19.44
+- https://github.com/OpenXT/xenclient-oe/commit/414c32e623f64555a23ada01f08c9fbb0b14f119[xenclient-oe/414c32e6]: initscripts: udev-volatiles early script.
+- https://github.com/OpenXT/xenclient-oe/commit/cae125a86e5f609b09923ba685cdad6054e0233a[xenclient-oe/cae125a8]: Add three KCONFIG grant table patches and a new defconfig
+- https://github.com/OpenXT/xenclient-oe/commit/943589345e6226db983a2fd0d4986b479fdf7d7b[xenclient-oe/94358934]: Revert "[xen] Temporarily use v4v in place of Argo"
+- https://github.com/OpenXT/xenclient-oe/commit/84996c16191639959d13f119233219a7e86f934c[xenclient-oe/84996c16]: cgroups: add missing SELinux permissions
+- https://github.com/OpenXT/xenclient-oe/commit/2346dfc980c0b98fc03bb61e611a48ceeff1a09f[xenclient-oe/2346dfc9]: base-files: Fix syncvm fstab & fstab.early
+- https://github.com/OpenXT/xenclient-oe/commit/86c7ab38577f3103e3c093299539791434c17073[xenclient-oe/86c7ab38]: syncvm: Use /etc/resolv.conf -> /var/run/resolv.conf symlink
+- https://github.com/OpenXT/xenclient-oe/commit/49d0e4d5f1a1c741156484b09d5d06722b52f27f[xenclient-oe/49d0e4d5]: syncvm-tweaks: Define /etc/network/interfaces symlink
+- https://github.com/OpenXT/xenclient-oe/commit/c527210cab08d92d2bf020506d60a7729bbdb968[xenclient-oe/c527210c]: pyicbinn: RDEPENDS on python-importlib
+- https://github.com/OpenXT/xenclient-oe/commit/a6fd6c9d25a4056029c42d9197cdb99aee3301ad[xenclient-oe/a6fd6c9d]: initscripts: Remove save-rtc.sh
+- https://github.com/OpenXT/xenclient-oe/commit/91556a8373dd3702f22f09b43a39de5129b015f4[xenclient-oe/91556a83]: Only set rtc for dom0 & installer MACHINE_FEATURES
+- https://github.com/OpenXT/xenclient-oe/commit/ab4842180b3d8070e2e1457c1bd24b06316ac5aa[xenclient-oe/ab484218]: ndvm-image: drop hwclock.sh initscript removal
+- https://github.com/OpenXT/xenclient-oe/commit/46e9c192975330d651fdedc00d8ab7956e8ec08f[xenclient-oe/46e9c192]: uivm-image: drop hwclock.sh PACKAGE_REMOVE
+- https://github.com/OpenXT/xenclient-oe/commit/20a09d715cd7edb3fd7ea0b36457e137bc710e3f[xenclient-oe/20a09d71]: oe-addons: Remove unused recipe directory.
+- https://github.com/OpenXT/xenclient-oe/commit/9f905f7ae4ed6beffbcbb3781de9f52e1d138eac[xenclient-oe/9f905f7a]: flex: Remove duplicated recipe with upstream.
+- https://github.com/OpenXT/xenclient-oe/commit/cbe748f1f9451cde716c312c380720b3ce66c9a8[xenclient-oe/cbe748f1]: python-dbus: Use upstream recipe.
+- https://github.com/OpenXT/xenclient-oe/commit/3f236dd2c80c9e5b1780736d3ef38f573ad49c2b[xenclient-oe/3f236dd2]: python-epydoc: Use upstream recipe.
+- https://github.com/OpenXT/xenclient-oe/commit/f230002a64d0c16b8691556bd0108e5ed246a3e4[xenclient-oe/f230002a]: libxklavier: Remove local recipe.
+- https://github.com/OpenXT/xenclient-oe/commit/07e25ddbc892869a6ba1cc15489e0c85f50e95bb[xenclient-oe/07e25ddb]: dialog: Remove local recipe.
+- https://github.com/OpenXT/xenfb2/commit/5ef3028ce73624cb5a2aa2e4ae764f76f5b641d0[xenfb2/5ef3028c]: linux: use proper translation function.
+- https://github.com/OpenXT/xenfb2/commit/2b9a049548305ff40b661e6afdb5f6c47b1b9ba6[xenfb2/2b9a0495]: linux: Refactor shared-page init.
+- https://github.com/OpenXT/xenfb2/commit/4fa4b8d08af3c8e3990ca415102e024bd51761ab[xenfb2/4fa4b8d0]: linux: Remove signed cast on unsigned values.
+- https://github.com/OpenXT/xenfb2/commit/6ead473e346e2b8d20e08eab18c9d78e892d5460[xenfb2/6ead473e]: linux: align xenfb2_setcolreg on upstream.
+- https://github.com/OpenXT/xenfb2/commit/5cee8409f01219195f9f462da8a56df0b5f9a5c1[xenfb2/5cee8409]: linux: Fix segv in error path.
+- https://github.com/OpenXT/xsm-policy/commit/d6439e946418f03ae0b0dc1861ae7b3f3dd3df2c[xsm-policy/d6439e94]: xen 4.10: add missing permissions to set_gnttab_limit
+- https://github.com/OpenXT/xsm-policy/commit/d19ae3d5f525f3dd253dcb6c99576ff8934d22c8[xsm-policy/d19ae3d5]: Enable HVM NDVM
+- https://github.com/OpenXT/xsm-policy/commit/bc068e7f3c80062b626328dd3a0feeb06ed7f531[xsm-policy/bc068e7f]: access_vectors: update to Xen 4.11
+- https://github.com/OpenXT/xsm-policy/commit/78f99a398c7a9244b1b632bf4f66c6a8dacdc842[xsm-policy/78f99a39]: Support Linux 4.19 on Xen 4.11 by adding access to resource_map
+- https://github.com/OpenXT/xsm-policy/commit/bd55e0cf0246c234737fa68c7b291bbfe4b917c1[xsm-policy/bd55e0cf]: [xsm] x64 flask perms
+
+<<<
+
+:numbered:
+Testing
+-------
+
+==== Test Criteria
+
+Testing was performed on the stable-9 branch and against several release candidates prior to the OpenxT 9.0.0 release.  The following list summarizes publicly disclosed test results.
+
+===== HVM guests environments
+ * Windows10 1709 64 bit
+ * Windows10 1803 64 bit
+ * Windows10 1809 64 bit
+ * Ubuntu 18.04 64 bit (note: See Known Issues for Ubuntu for help installing)
+ * Debian 9.9 (note: See Known Issues for Debian for help installing)
+ * RHEL 7.5 (note: disable bochs_drm)
+
+===== Tested platforms
+* Dell
+ - Dell Optiplex 7040
+ - Dell Optiplex 7060
+ - Dell Optiplex XE3
+ - Dell Latitude E7470
+ - Dell Latitude E7490
+
+===== Tests logs
+
+ * https://openxt.atlassian.net/wiki/spaces/TEST/pages/762019841/Stable-9+rc2+Test+Matrix+results[General Testcases]
+ * https://openxt.atlassian.net/wiki/spaces/TEST/pages/761823271/OpenXT+9.0+Measurement+Test[Upgrade and Measurements]
+
+<<<
+
+:numbered:
+Known Issues
+------------
+
+==== QEMU Audio does not work in Windows/Linux VMs
+
+The default emulated audio device is an ac97 device and Windows 7 and later no longer packages an ac97 driver.
+
+The user has two options for audio,
+[horizontal]
+[width="5%"]
+*"ac97"*:: provides working audio with slight crackling
+   - Linux should detect and load ac97 driver.
+   - Windows, download and install drivers from Realtek.
+*"hda"*:: provides poor audio quality and severe crackling
+   - Linux should detect and load intel_hda driver.
+   - Windows automatically installs drivers
+
+To use "hda", you will need to enter the following in Dom0 terminal window,
+[source,sh]
+----
+db-write /vm/$( xec-vm -n "<vm name>" get uuid )/config/sound hda
+----
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-939[OXT-939]
+
+==== Nvidia Quadro NVS 310, PCI GPU pass-through
+
+Nvidia Quadro NVS 310 GPU passthrough is not supported in OpenXT 9.0.0.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1070[OXT-1070]
+
+==== Host S3 resume results in a panic early in Xen and reboot
+
+Host S3 is not supported in OpenXT 9.0.0.
+ 
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1092[OXT-1092]
+
+==== Host S3 hangs on Broadwell and newer systems
+
+Host S3 is not supported in OpenXT 9.0.0.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1093[OXT-1093]
+
+==== More than 4 emulated IDE devices cause QEMU to fail to start
+
+OpenXT 9.0.0 limits a VM to a maximum of four emulated IDE devices (CD/DVD/HDD) being attached at one time.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1123[OXT-1123]
+
+==== Deleting a VM when a USB Device has attached with "Always use with this VM"
+
+If a USB device has been exclusively assigned to a VM and that VM is deleted, then the USB device will no longer be available to assign to another VM.
+
+It is recommended to disconnect any USB devices from a VM before deleting the VM.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-930[OXT-930]
+
+==== Windows guest intermittently/randomly does not shut down
+
+During testing, it appears that the presence of the "scsifilt.sys" driver can inhibit Windows guests from properly shutting down.
+
+When attempting to shut down a Windows guest and it's state in the UIVM is "On" and not "Shutting Down", then the VM will need to be halted using the "Force Shutdown" option from the VMs menu in the UIVM.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1240[OXT-1240]
+
+==== Raw disk can no longer be assigned to VMs
+
+OpenXT 9.0.0 does not support RAW disk assignement to HVM guests with stub-domain.
+
+To assign a RAW disk to a guest:
+[source,sh]
+----
+xec-vm -n <vm-name> --disk <disk-id> set phys-type phy
+xec-vm -n <vm-name> --disk <disk-id> set phys-path <disk-image-path>
+----
+Then disable the stub-domain:
+[source,sh]
+----
+xec-vm -n <vm-name> set stubdom false
+----
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1356[OXT-1356]
+
+==== Connected USB storage measured as part of vendor measurements
+
+Some systems will measure the presence of connected USB devices during sealing operation. This will result in measurement failing if the USB device is removed on the next platform reboot.
+This cannot be worked-around and resealing the platform without the removable media is the only known option. Firmware updates may be provided by the platform OEM to change this behavior.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1129[OXT-1129]
+
+
+==== Blacklisting bochs_drm
+
+Ubuntu 18.04 and Debian 9 usually require blacklisting bochs_drm so they will boot after install. This can be done in one of two ways
+
+In /etc/modprobe.d/blacklist.conf, add
+
+----
+blacklist bochs_drm
+----
+or add to kernel command line
+
+----
+modprobe.blacklist=bochs_drm
+----
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-806[OXT-806]
+
+==== Disabling Wayland and resolving non-standard resolutions in Ubuntu 18.04
+
+Ubuntu 18.04 guests require Wayland to be disabled.  To disable it, uncomment 
+
+----
+#WaylandEnable=False
+----
+in /etc/gdm3/custom.conf and/or /etc/gdm3/daemon.conf.
+
+Sometimes, Ubuntu has issues with non-standard resolutions that manifests as just a black screen. Running the following commands in guest should resolve the issues.
+
+----
+sudo apt install --reinstall xserver-xorg-video-intel xserver-xorg-core     
+sudo apt install xserver-xorg     
+sudo dpkg-reconfigure xserver-xorg    
+sudo apt-get install xvfb xfonts-100dpi xfonts-75dpi xfstt     
+
+Edit /etc/default/grub     
+GRUB_GFXMODE=1280x960,1280x800,1280x720,1152x768,1152x700,1024x768,800x600     
+GRUB_PAYLOAD_LINUX=keep     
+sudo update-grub     
+sudo reboot
+----
+
+For reference: https://xenserver.org/blog/entry/increasing-ubuntu-s-resolution.html
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1661[OXT-1661]
+
+
+==== Upgrades from 8.0.1 to 9.0.0 with host UEFI fail measurement after upgrade
+
+Under 8.0.1, UEFI installs are Static Root of Trust for Measurement (SRTM) only.  9.0.0 uses both SRTM and DRTM.  In order to predict the PCR values for DRTM PCRs 17, 18, and 19,
+the platform must have first booted with DRTM so insight can be gained from the values in those PCRs.  Under SRTM-only boots, 17, 18, and 19 values are all 0xf's, making it impossible
+to forward seal such that measurement will succeed on the subsequent boot if upgrading from SRTM to SRTM+DRTM, in the case of 8.0.1 to 9.0.0.
+
+Therefore, the administrator should expect to reseal the platform on first boot after this upgrade is complete.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1659[OXT-1659]
+
+==== Using an addon GPU as the Primary Display Device is unsupported
+
+Always use the onboard display device as the primary display device in your system's BIOS.  Using "auto" or an addon GPU as primary is unsupported, and will result in
+a crash.  Additionally on some Dell machines, an addon GPU may override what the system considers to be the "integrated" GPU depending on the x16 PCI slot its inserted into.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1601[OXT-1601] https://openxt.atlassian.net/browse/OXT-1603[OXT-1603] 
+
+==== PV Disk Drivers have been removed from Windows tools
+
+Emulated AHCI provides higher performance than both emulated IDE and PV. Upgrading OpenXT with guests that have guest tools installed should reinstall the new guest tools
+from the upgraded build. Additionally, the existing guest should be switched to using emulated AHCI disk type.
+
+----
+xec-vm -n <guest vm name> set hdtype ahci
+----
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1559[OXT-1559]
+
+==== Docked laptops may produce inconsistent PCR measurements between docked and undocked configurations
+
+Due to how vendor firmware extends measurements into some PCRs, docked and undocked configurations for a laptop may produce different measurements.  This would be observed
+by, for example, a measurement failure at boot time when the laptop is off the dock, as opposed to successful boot when the laptop is on the dock.  Please handle your
+usecase accordingly.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1594[OXT-1594]
+
+==== Custom NDVMs that do not use network-slave
+
+For custom NDVMs and service VMs that do not include network-slave, db-rm /vm/$uuid/config/nic/$N/network for any guests using network-slave-less network backends.
+
+When a NDVM or service vm is restarted, xenmgr will re-attched any Xen netfront drivers to the new network backends. To confirm attachment, xenmgr will RPC through network-daemon to network-slave for any NICs with a defined "network" (/vm/$uuid/config/nic/$N/network). If the NDVM/service VM does not run network-slave, db-rm the "network" key to avoid triggering RPC calls which will go unanswered.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1595[OXT-1595]
+
+==== Disable Hyperthreading on Intel devices
+
+For security purposes, hyperthreading should be disabled in xen running on Intel devices.  OpenXT 9.0.0 disables Hyperthreading By default, by including the following option 
+to the Xen command line:
+
+----
+smt=0
+----
+
+It is extremely recommended not to remove this value.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1433[OXT-1433]
+
+
+
+<<<
+
+:numbered:
+Contributors
+------------
+
+- Jason Andryuk <jandryuk@gmail.com>
+- Jed <lejosnej@ainfosec.com>
+- Chris <rogersc@ainfosec.com>
+- Mahantesh Salimath <salimathm@ainfosec.com>
+- Jafar Al-Gharaibeh <jafar@atcorp.com>
+- Christopher Clark <christopher.clark6@baesystems.com>
+- Chris Rogers <rogersc@ainfosec.com>
+- Kevin Pearson <kevin.pearson@ortmanconsulting.com>
+- Nicholas Tsirakis <tsirakisn@ainfosec.com>
+- Mahantesh Salimath <mahantesh.openxt@gmail.com>
+- Daniel P. Smith <dpsmith@apertussolutions.com>
+- turnerr <turnerr@ainfosec.com>
+- Tyler McGavran <mcgavrant@ainfosec.com>
+- Richard Turner <turnerr@ainfosec.com>
+- Tim Konick <konickt@ainfosec.com>
+- Eric Chanudet <chanudete@ainfosec.com>
+- Tamas K Lengyel <lengyelt@ainfosec.com>
+
+<<<
+
+[appendix]
+License
+-------
+Copyright 2019 by <Assured Information Security, Inc>. Created by rogersc <rogersc@ainfosec.com>. This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
