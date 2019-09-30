@@ -1,0 +1,387 @@
+OpenXT 9.0.2 Release
+====================
+Chris Rogers <rogersc@ainfosec.com>
+v1.0, September 2019: First revision
+:toc:
+
+:numbered:
+Platform
+--------
+
+==== Introduction
+
+These are the Release Notes for the 9.0.2 release of OpenXT.
+The 9.0.2 release provides bug fixes to the 9.0 release line of OpenXT.
+This release fixes the upgrade path for existing VMs created on OpenXT 8.0 to
+transfer correctly to OpenXT 9.0 line.
+
+In OpenXT 9.0 and 9.0.1, there was an issue with VHD Encryption that caused it to be disabled. 
+In 9.0.2, it is fixed and re-enabled for VHDs created in the OpenXT 9.0 line. As a result, VMs 
+created with encrypted VHDs ONLY on 9.0.0 and 9.0.1, need to be manually re-encrypted.  To do this, 
+please refer to the instructions in the "Known Issues" section.
+
+==== OE Layers and Core Component Versions
+
+The 9.0.2 release is a tagged checkpoint of the stable-9 branch.
+
+- OpenEmbedded: Pyro
+  * openembedded-core: link:http://git.openembedded.org/openembedded-core/commit/?id=819aa151bd634122a46ffdd822064313c67f5ba5[819aa151bd build-appliance-image: Update to pyro head revision]
+  * meta-openembedded: link:http://git.openembedded.org/openembedded-core/commit/?id=9eaebc6e783f1394bb5444326cd05a976b3122e9[9eaebc6e7 wireshark: Update Package to 2.2.12]
+  * meta-intel: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-intel/commit/?id=df4b25bcd31ece5369eca36d6f3590d98553336a[df4b25bcd linux-intel/4.9: update to 4.9.116]
+  * meta-java: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-java/commit/?id=0c27b120aa508e4bb41394b8dd3645949a611128[0c27b12 icedtea-native: Fix segmentation build during build]
+  * meta-selinux: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-selinux/commit/?id=b1dac7e2b26f869c991c6492aa7fa18eaa4b47f6[b1dac7e policycorutils: package files in base_sbindir.]
+  * meta-virtualization: link:http://git.yoctoproject.org/cgit/cgit.cgi/meta-virtualization/commit/?id=e3402d96f288b65c58ef24ae638c3f4e88dedf90[e3402d9 seabios: update SRC_URI to: https://www.seabios.org/downloads/]
+- Xen: 4.12.1-pre
+  * xen: link:http://xenbits.xen.org/gitweb/?p=xen.git;a=commit;h=b4f291b0ca914454cbac9fa5580bb35f8ab04eee[b4f291b xl: handle PVH type in apply_global_affinity_masks again]
+- Linux kernels: 4.19.53
+  * linux link:https://github.com/torvalds/linux/commit/9f31eb60d7a23536bf3902d4dc602f10c822b79e[9f31eb6 Linux 4.19.53]
+
+==== Measurement support
+
+OpenXT supports two modes of measurement. Each mode is enforced automatically depending on the boot method of the OpenXT installation (Legacy vs UEFI).
+
+As for Legacy or UEFI support, it is not currently possible to transistion or upgrade an existing OpenXT installation from Legacy to UEFI, therefore it is not possible to change an existing measurement scheme or forward seal against a different one.
+
+===== Legacy boot
+
+Legacy installation will perform DRTM measurement using TBoot. It requires a compatible TPM chip and TXT to be enabled in the BIOS before installing OpenXT.
+
+===== UEFI
+
+UEFI installation will perform SRTM+DRTM measurement. It requires a compatible TPM chip and TXT to be enabled in the BIOS before installing OpenXT.
+
+==== Package upgrades: Dom0
+
+dbd: 0+git0+eec9ec9068-r0 -> 0+git0+40cdaee900-r0
+drm-surfman-plugin: 0+git0+f972c2d33e-r0 -> 0+git0+8cb6df0a01-r0
+libsurfman-2.1-0: 0+git0+f972c2d33e-r0 -> 0+git0+8cb6df0a01-r0
+libxenmgr-core: 0+git0+eec9ec9068-r0 -> 0+git0+40cdaee900-r0
+linuxfb-surfman-plugin: 0+git0+f972c2d33e-r0 -> 0+git0+8cb6df0a01-r0
+rpc-proxy: 0+git0+eec9ec9068-r0 -> 0+git0+40cdaee900-r0
+surfman: 0+git0+f972c2d33e-r0 -> 0+git0+8cb6df0a01-r0
+updatemgr: 0+git0+eec9ec9068-r0 -> 0+git0+40cdaee900-r0
+upgrade-db: 0+git0+eec9ec9068-r0 -> 0+git0+40cdaee900-r0
+xec: 0+git0+eec9ec9068-r0 -> 0+git0+40cdaee900-r0
+xenclient-feed-configs: 6700-r15 -> 6768-r15
+xenmgr: 0+git0+eec9ec9068-r0 -> 0+git0+40cdaee900-r0
+
+==== Package upgrades: UIVM
+
+xenclient-feed-configs: 6700-r15 -> 6768-r15
+
+==== Package upgrades: NDVM (Network)
+
+db-tools: 0+git0+eec9ec9068-r0 -> 0+git0+40cdaee900-r0
+xenclient-feed-configs: 6700-r15 -> 6768-r15
+
+<<<
+
+:numbered:
+Feature Additions
+-----------------
+
+
+<<<
+
+:numbered:
+Security Fixes
+--------------
+
+- https://github.com/OpenXT/xenclient-oe/commit/0f9e2779eeed410bb7a22f7a144518f2c90cffd6[xenclient-oe/0f9e2779]: [blktap3] Fix blktap3 vhd encryption, https://openxt.atlassian.net/browse/OXT-1688[OXT-1688] 
+
+<<<
+
+:numbered:
+Maintenance Changes
+-------------------
+
+- https://github.com/OpenXT/surfman/commit/44e00efb62b90f35478b7c468455577854435675[surfman/44e00efb]: drm-plugin: Declare DPMS helpers early., https://openxt.atlassian.net/browse/OXT-1674[OXT-1674] 
+- https://github.com/OpenXT/surfman/commit/4c2281f9e7437390c287dd3e3b75cce8b91c6304[surfman/4c2281f9]: drm-plugin: Segfault starting disabled connectors., https://openxt.atlassian.net/browse/OXT-1674[OXT-1674] 
+- https://github.com/OpenXT/xenclient-oe/commit/29574592d86728df3841d22c2f1fa9458631f317[xenclient-oe/29574592]: refpolicy: Let vhd-util create UNIX/DGRAM sockets., https://openxt.atlassian.net/browse/OXT-1670[OXT-1670] 
+- https://github.com/OpenXT/xenclient-oe/commit/12a17a1812cb972fa5aecd830a4cee6489bb84d4[xenclient-oe/12a17a18]: console-setup: switch to fetching from the git repository
+Instead of tarballs from the Debian package repository,
+which changes every Debian release.
+Also, switch back to version 1.191., https://openxt.atlassian.net/browse/OXT-1645[OXT-1645] 
+- https://github.com/OpenXT/xenclient-oe/commit/0a00a9704430c4fbf7d8e7a2f193ec2ddd6ef74d[xenclient-oe/0a00a970]: ovmf: update PREBOOT.EXE shasum to match latest version, https://openxt.atlassian.net/browse/OXT-1678[OXT-1678] 
+- https://github.com/OpenXT/xenclient-oe/commit/6c662204611cbcefd9c1cd413564b0a057884d67[xenclient-oe/6c662204]: refpolicy-mcs: Let modutils search tracefs., https://openxt.atlassian.net/browse/OXT-1429[OXT-1429] 
+- https://github.com/OpenXT/manager/commit/d01c40caa3637ab9089bf7cf9a82a083136eec38[manager/d01c40ca]: upgrade-db: Update db-version to apply Migration_40
+- https://github.com/OpenXT/openxt/commit/0da9f791e2d7005f79b35d06631d72f9be02516d[openxt/0da9f791]: Bump version from 9.0.1 to 9.0.2
+- https://github.com/OpenXT/xenclient-oe/commit/c148c9dafc288d28a4f0c159742e321faba1faa5[xenclient-oe/c148c9da]: qemu: Handle EMSGSIZE in chardev-argo/argo_send
+- https://github.com/OpenXT/xenclient-oe/commit/f1301b5c347bdf7d24dc6b79e5d03ccdf81b05bd[xenclient-oe/f1301b5c]: qemu-dm: chardev-argo: Use DOMID_FIRST_RESERVED
+- https://github.com/OpenXT/xenclient-oe/commit/403ae3a6014637dde014ed8d485ac8a2e1d0369e[xenclient-oe/403ae3a6]: init.root-ro: Leave console bound during boot, https://openxt.atlassian.net/browse/OXT-1662[OXT-1662] 
+
+<<<
+
+:numbered:
+Testing
+-------
+
+==== Test Criteria
+
+Testing was performed on the stable-9 branch and focused on upgrading from 9.0.0 due to the very limited amount of changes.
+
+===== Tests logs
+
+ * https://openxt.atlassian.net/wiki/spaces/TEST/pages/761823271/OpenXT+9.0+Measurement+Test[Upgrade and Measurements]
+
+<<<
+
+:numbered:
+Known Issues
+------------
+
+==== QEMU Audio does not work in Windows/Linux VMs
+
+The default emulated audio device is an ac97 device and Windows 7 and later no longer packages an ac97 driver.
+
+The user has two options for audio,
+[horizontal]
+[width="5%"]
+*"ac97"*:: provides working audio with slight crackling
+   - Linux should detect and load ac97 driver.
+   - Windows, download and install drivers from Realtek.
+*"hda"*:: provides poor audio quality and severe crackling
+   - Linux should detect and load intel_hda driver.
+   - Windows automatically installs drivers
+
+To use "hda", you will need to enter the following in Dom0 terminal window,
+[source,sh]
+----
+db-write /vm/$( xec-vm -n "<vm name>" get uuid )/config/sound hda
+----
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-939[OXT-939]
+
+==== Nvidia Quadro NVS 310, PCI GPU pass-through
+
+Nvidia Quadro NVS 310 GPU passthrough is not supported in OpenXT 9.0.1.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1070[OXT-1070]
+
+==== Host S3 resume results in a panic early in Xen and reboot
+
+Host S3 is not supported in OpenXT 9.0.1.
+ 
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1092[OXT-1092]
+
+==== Host S3 hangs on Broadwell and newer systems
+
+Host S3 is not supported in OpenXT 9.0.1.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1093[OXT-1093]
+
+==== More than 4 emulated IDE devices cause QEMU to fail to start
+
+OpenXT 9.0.1 limits a VM to a maximum of four emulated IDE devices (CD/DVD/HDD) being attached at one time.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1123[OXT-1123]
+
+==== Deleting a VM when a USB Device has attached with "Always use with this VM"
+
+If a USB device has been exclusively assigned to a VM and that VM is deleted, then the USB device will no longer be available to assign to another VM.
+
+It is recommended to disconnect any USB devices from a VM before deleting the VM.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-930[OXT-930]
+
+==== Windows guest intermittently/randomly does not shut down
+
+During testing, it appears that the presence of the "scsifilt.sys" driver can inhibit Windows guests from properly shutting down.
+
+When attempting to shut down a Windows guest and it's state in the UIVM is "On" and not "Shutting Down", then the VM will need to be halted using the "Force Shutdown" option from the VMs menu in the UIVM.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1240[OXT-1240]
+
+==== Raw disk can no longer be assigned to VMs
+
+OpenXT 9.0.1 does not support RAW disk assignement to HVM guests with stub-domain.
+
+To assign a RAW disk to a guest:
+[source,sh]
+----
+xec-vm -n <vm-name> --disk <disk-id> set phys-type phy
+xec-vm -n <vm-name> --disk <disk-id> set phys-path <disk-image-path>
+----
+Then disable the stub-domain:
+[source,sh]
+----
+xec-vm -n <vm-name> set stubdom false
+----
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1356[OXT-1356]
+
+==== Connected USB storage measured as part of vendor measurements
+
+Some systems will measure the presence of connected USB devices during sealing operation. This will result in measurement failing if the USB device is removed on the next platform reboot.
+This cannot be worked-around and resealing the platform without the removable media is the only known option. Firmware updates may be provided by the platform OEM to change this behavior.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1129[OXT-1129]
+
+
+==== Blacklisting bochs_drm
+
+Ubuntu 18.04 and Debian 9 usually require blacklisting bochs_drm so they will boot after install. This can be done in one of two ways
+
+In /etc/modprobe.d/blacklist.conf, add
+
+----
+blacklist bochs_drm
+----
+or add to kernel command line
+
+----
+modprobe.blacklist=bochs_drm
+----
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-806[OXT-806]
+
+==== Disabling Wayland and resolving non-standard resolutions in Ubuntu 18.04
+
+Ubuntu 18.04 guests require Wayland to be disabled.  To disable it, uncomment 
+
+----
+#WaylandEnable=False
+----
+in /etc/gdm3/custom.conf and/or /etc/gdm3/daemon.conf.
+
+Sometimes, Ubuntu has issues with non-standard resolutions that manifests as just a black screen. Running the following commands in guest should resolve the issues.
+
+----
+sudo apt install --reinstall xserver-xorg-video-intel xserver-xorg-core     
+sudo apt install xserver-xorg     
+sudo dpkg-reconfigure xserver-xorg    
+sudo apt-get install xvfb xfonts-100dpi xfonts-75dpi xfstt     
+
+Edit /etc/default/grub     
+GRUB_GFXMODE=1280x960,1280x800,1280x720,1152x768,1152x700,1024x768,800x600     
+GRUB_PAYLOAD_LINUX=keep     
+sudo update-grub     
+sudo reboot
+----
+
+For reference: https://xenserver.org/blog/entry/increasing-ubuntu-s-resolution.html
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1661[OXT-1661]
+
+
+==== Upgrades from 8.0.1 to 9.0.1 with host UEFI fail measurement after upgrade
+
+Under 8.0.1, UEFI installs are Static Root of Trust for Measurement (SRTM) only.  9.0.1 uses both SRTM and DRTM.  In order to predict the PCR values for DRTM PCRs 17, 18, and 19,
+the platform must have first booted with DRTM so insight can be gained from the values in those PCRs.  Under SRTM-only boots, 17, 18, and 19 values are all 0xf's, making it impossible
+to forward seal such that measurement will succeed on the subsequent boot if upgrading from SRTM to SRTM+DRTM, in the case of 8.0.1 to 9.0.1.
+
+Therefore, the administrator should expect to reseal the platform on first boot after this upgrade is complete.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1659[OXT-1659]
+
+==== Using an addon GPU as the Primary Display Device is unsupported
+
+Always use the onboard display device as the primary display device in your system's BIOS.  Using "auto" or an addon GPU as primary is unsupported, and will result in
+a crash.  Additionally on some Dell machines, an addon GPU may override what the system considers to be the "integrated" GPU depending on the x16 PCI slot its inserted into.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1601[OXT-1601] https://openxt.atlassian.net/browse/OXT-1603[OXT-1603] 
+
+==== PV Disk Drivers have been removed from Windows tools
+
+Emulated AHCI provides higher performance than both emulated IDE and PV. Upgrading OpenXT with guests that have guest tools installed should reinstall the new guest tools
+from the upgraded build. Additionally, the existing guest should be switched to using emulated AHCI disk type.
+
+----
+xec-vm -n <guest vm name> set hdtype ahci
+----
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1559[OXT-1559]
+
+==== Docked laptops may produce inconsistent PCR measurements between docked and undocked configurations
+
+Due to how vendor firmware extends measurements into some PCRs, docked and undocked configurations for a laptop may produce different measurements.  This would be observed
+by, for example, a measurement failure at boot time when the laptop is off the dock, as opposed to successful boot when the laptop is on the dock.  Please handle your
+usecase accordingly.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1594[OXT-1594]
+
+==== Custom NDVMs that do not use network-slave
+
+For custom NDVMs and service VMs that do not include network-slave, db-rm /vm/$uuid/config/nic/$N/network for any guests using network-slave-less network backends.
+
+When a NDVM or service vm is restarted, xenmgr will re-attched any Xen netfront drivers to the new network backends. To confirm attachment, xenmgr will RPC through network-daemon to network-slave for any NICs with a defined "network" (/vm/$uuid/config/nic/$N/network). If the NDVM/service VM does not run network-slave, db-rm the "network" key to avoid triggering RPC calls which will go unanswered.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1595[OXT-1595]
+
+==== Disable Hyperthreading on Intel devices
+
+For security purposes, hyperthreading should be disabled in xen running on Intel devices.  OpenXT 9.0.1 disables Hyperthreading By default, by including the following option 
+to the Xen command line:
+
+----
+smt=0
+----
+
+It is extremely recommended not to remove this value.
+
+* JIRA Issue: https://openxt.atlassian.net/browse/OXT-1433[OXT-1433]
+
+==== VHDs created in OpenXT 9.0 before 9.0.2 are not encrypted.
+
+Guests created using OpenXT 9.0.0 and 9.0.1 to use an encrypted VHD were not encrypted as expected. Guests with encrypted VHDs created in OpenXT 8.0 line or starting with 9.0.2 are not affected. To encrypt the existing VHDs, an administrator can use the following instructions:
+
+- Open an admin terminal using control-shift-t.
+- Enter the adminstrative password
+- Newrole to elevated prompt
+----
+root@xenclient-dom0:~# newrole -r sysadm_r
+----
+- Change directory to where VHDs are stored
+----
+root@xenclient-dom0:~# cd /storage/disks
+----
+- Get the VHD(s) attached to an affected VM. An affected VM is a guest VM created on 9.0.0 or 9.0.1 with disk encryption enabled.
+----
+root@xenclient-dom0:~# xec-vm -n <vm name> list-disks
+----
+- For each entry in the list, check for a vhd and if it's encrypted. <disk id> is the number at the end of each line returned in the last command. (ex. /vm/<uuid>/disk/0, <disk id> is 0 in this case).
+----
+root@xenclient-dom0:~# xec-vm -n <vm name> -k <disk id> get encryption-key-set
+----
+- If the last command returns true, get the phys-path of the disk. This is the path to the physical vhd
+----
+root@xenclient-dom0:~# xec-vm -n <vm name> -k <disk id> get phys-path
+----
+- Back up our vhd incase something goes wrong. This may take some time depending on the vhd size. For the remainder of these instructions $VHD should be treated as the vhd file name, without the .vhd suffix.  For example if your vhd is "b9f31a71-e11f-45c1-9cb5-76faec191e90.vhd", $VHD is just "b9f31a71-e11f-45c1-9cb5-76faec191e90"
+----
+root@xenclient-dom0:~# cp $VHD.vhd $VHD.vhd.bk
+----
+- Clear the keyhash, vhd-util doesn't let us do this so we have to do it manually. The keyhash is at a well-known offset.
+----
+root@xenclient-dom0:~# dd if=/dev/zero of=/storage/disks/$VHD.vhd bs=1 seek=161854 count=32 conv=notrunc
+----
+- Clear the flag that tells vhd to look for a keyhash, also at a well-known offset.
+----
+root@xenclient-dom0:~# dd if=/dev/zero of=/storage/disks/$VHD.vhd bs=1 seek=161821 count=1 conv=notrunc
+----
+- The current encryption key is fine, just rename the vhd so we can use the builtin key finding
+----
+root@xenclient-dom0:~# mv $VHD.vhd $VHD.vhd.old
+----
+- The original key is still in the default key directory. Do an encrypted copy from the old vhd to a new encrypted one. It re-uses the name so it can find the key automatically and so that the phys-path does not need to be changed.
+----
+root@xenclient-dom0:~# TAPDISK3_CRYPTO_KEYDIR="/config/platform-crypto-keys" vhd-util copy -n $VHD.vhd.old -N $VHD.vhd -k /config/platform-crypto-keys/$VHD,aes-xts-plain,512.key
+----
+- Wait for the copy to complete. Repeat for each affected VM and vhd. Verify all vhds are intact before deleting their backups.
+
+<<<
+
+:numbered:
+Contributors
+------------
+
+- Eric Chanudet <chanudete@ainfosec.com>
+- Jason Andryuk <jandryuk@gmail.com>
+- Jed <lejosnej@ainfosec.com>
+- Chris Rogers <rogersc@ainfosec.com>
+<<<
+
+[appendix]
+License
+-------
+Copyright 2019 by <Assured Information Security, Inc>. Created by Chris Rogers <rogersc@ainfosec.com>. This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
